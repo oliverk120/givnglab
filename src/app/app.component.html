@@ -4,19 +4,19 @@
       <img src="assets/logo.jpg">
     </div>
     <div>
-
-      <ul>
-        <!--Query: {{query}}-->
-        <!--<li ng-repeat="item in data">{{item}}</li>-->
-      </ul>
+<ul class="heroes">
+  <li *ngFor="let gift of gifts">
+    <span class="badge">{{gift.id}}</span> {{gift.name}}
+  </li>
+</ul>
       <div class="col-sm-12"  style="text-align: center">
 
         <div> I need a gift for my   
           <mat-form-field appearance="fill">
             <mat-label>Recipient</mat-label>
             <mat-select>
-              <mat-option *ngFor="let food of foods" [value]="food.value">
-                {{food.viewValue}}
+              <mat-option *ngFor="let recipient of recipients" [value]="recipient.value">
+                {{recipient.viewValue}}
               </mat-option>
             </mat-select>
           </mat-form-field>.

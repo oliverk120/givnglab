@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+import { GIFTS } from './giftsDatabase';
 
-interface Food {
+interface Recipient {
   value: string;
   viewValue: string;
 }
@@ -12,11 +13,12 @@ interface Food {
 })
 export class AppComponent {
   title = 'GivngLAB';
-  foods: Food[] = [
+  recipients: Recipient[] = [
     {value: 'mother', viewValue: 'Mother'},
     {value: 'brothers', viewValue: 'Brothers'},
     {value: 'baby daughter', viewValue: 'Baby Daughter'},
     {value: 'wife', viewValue: 'Wife'}
   ];
   panelOpenState = false;
+  gifts = GIFTS;
 }
