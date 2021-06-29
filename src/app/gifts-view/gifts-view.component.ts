@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GIFTS } from '../giftsDatabase';
 
 @Component({
   selector: 'app-gifts-view',
@@ -12,4 +13,5 @@ export class GiftsViewComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  gifts = GIFTS;
 }

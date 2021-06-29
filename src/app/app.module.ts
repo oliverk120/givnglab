@@ -9,12 +9,15 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule} from '@angular/material/select';
 import { MatExpansionModule} from '@angular/material/expansion'; 
 import { MatCheckboxModule} from '@angular/material/checkbox';
+import { MatGridListModule} from '@angular/material/grid-list'; 
+
 import { GiftsViewComponent } from './gifts-view/gifts-view.component';
 import { HomeComponent } from './home/home.component'; 
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'gifts-view', component: GiftsViewComponent },
+  { path: '**', component: HomeComponent },
 ];
 
 @NgModule({
@@ -34,7 +37,8 @@ const appRoutes: Routes = [
     MatSliderModule,
     MatSelectModule,
     MatExpansionModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatGridListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,2 +1,9 @@
 <p>gifts-view works!</p>
 <a routerLink="/home" routerLinkActive="active">Home</a>
+
+<mat-grid-list cols="2" rowHeight="2:1">
+  	<mat-grid-tile *ngFor="let gift of gifts">
+  	<img src="{{gift.url}}">
+  	<div>{{gift.name}}</div>
+	</mat-grid-tile>
+</mat-grid-list>
