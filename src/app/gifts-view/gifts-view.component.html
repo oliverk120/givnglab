@@ -1,9 +1,23 @@
-<p>gifts-view works!</p>
-<a routerLink="/home" routerLinkActive="active">Home</a>
-
-<mat-grid-list cols="2" rowHeight="2:1">
-  	<mat-grid-tile *ngFor="let gift of gifts">
+<div class="col-sm-12" style="text-align: center">
+</div>
+    <div class="col-sm-1" style="text-align: center"></div>
+    <div class="col-sm-10" style="text-align: center">
+<mat-grid-list cols="2" rowHeight="2:1" gutterSize="1em">
+  	<mat-grid-tile *ngFor="let gift of gifts" >
+  	<mat-grid-tile-header>{{gift.type}}</mat-grid-tile-header>
   	<img src="{{gift.url}}">
-  	<div>{{gift.name}}</div>
+  	<mat-grid-tile-footer>
+  	{{gift.name}}
+  	
+  		<button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+    <mat-icon>share</mat-icon>
+  </button>
+
+
+  </mat-grid-tile-footer>
 	</mat-grid-tile>
 </mat-grid-list>
+</div>

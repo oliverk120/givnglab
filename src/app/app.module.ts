@@ -10,6 +10,9 @@ import { MatSelectModule} from '@angular/material/select';
 import { MatExpansionModule} from '@angular/material/expansion'; 
 import { MatCheckboxModule} from '@angular/material/checkbox';
 import { MatGridListModule} from '@angular/material/grid-list'; 
+import { MatToolbarModule} from '@angular/material/toolbar'; 
+import { MatIconModule} from '@angular/material/icon';
+import { MatButtonModule} from '@angular/material/button';
 
 import { GiftsViewComponent } from './gifts-view/gifts-view.component';
 import { HomeComponent } from './home/home.component'; 
@@ -38,7 +41,10 @@ const appRoutes: Routes = [
     MatSelectModule,
     MatExpansionModule,
     MatCheckboxModule,
-    MatGridListModule
+    MatGridListModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
