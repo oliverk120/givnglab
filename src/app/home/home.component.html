@@ -9,7 +9,7 @@
         <div> I need a gift for my   
           <mat-form-field appearance="fill">
             <mat-label>Recipient</mat-label>
-            <mat-select>
+            <mat-select [(value)]=selectedRecipient>
               <mat-option *ngFor="let recipient of recipients" [value]="recipient.value">
                 {{recipient.viewValue}}
               </mat-option>
@@ -19,7 +19,7 @@
       </div>
 
     <div class="col-sm-12" style="text-align: center">
-      <a mat-flat-button color="warn" routerLink="/gifts-view" routerLinkActive="active">Find Gifts</a>
+      <a mat-flat-button color="warn" [routerLink]="['/gifts-view', selectedRecipient]" routerLinkActive="active">Find Gifts for</a>
       <!--<a class="btn btn-primary" role="button">Random</a>-->
     </div>
 <div class="col-sm-12"  style="text-align: center; color: white;">te</div>   

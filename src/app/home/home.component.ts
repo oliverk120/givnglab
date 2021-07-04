@@ -27,5 +27,6 @@ export class HomeComponent implements OnInit {
   ];
   panelOpenState = false;
   gifts = GIFTS;
+  selectedRecipient = '';
 
 }

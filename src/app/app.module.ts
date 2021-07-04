@@ -17,25 +17,10 @@ import { MatButtonModule} from '@angular/material/button';
 import { GiftsViewComponent } from './gifts-view/gifts-view.component';
 import { HomeComponent } from './home/home.component'; 
 
-const appRoutes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'gifts-view', component: GiftsViewComponent },
-  { path: '**', component: HomeComponent },
-];
-
 @NgModule({
-  declarations: [
-    AppComponent,
-    GiftsViewComponent,
-    HomeComponent
-  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
-    ),
     BrowserAnimationsModule,
     MatSliderModule,
     MatSelectModule,
@@ -45,6 +30,11 @@ const appRoutes: Routes = [
     MatToolbarModule,
     MatIconModule,
     MatButtonModule
+  ],
+  declarations: [
+    AppComponent,
+    GiftsViewComponent,
+    HomeComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,9 @@
+   <div class="row justify-content-center">
+    <div class="col-sm-8" style="text-align: center" >
+<h1>Digital Gift Ideas <span *ngIf="recipient"> for your {{recipient}}</span>
 
+</h1>
 
-    <div class="col-sm-8" style="text-align: center">
 <mat-grid-list cols="2" rowHeight="2:1" gutterSize="1em">
   	<mat-grid-tile *ngFor="let gift of gifts" >
   	<mat-grid-tile-header>{{gift.type}}</mat-grid-tile-header>
@@ -19,4 +22,5 @@
   </mat-grid-tile-footer>
 	</mat-grid-tile>
 </mat-grid-list>
+</div>
 </div>
