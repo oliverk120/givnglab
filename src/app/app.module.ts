@@ -16,7 +16,8 @@ import { MatIconModule} from '@angular/material/icon';
 import { MatButtonModule} from '@angular/material/button';
 
 import { GiftsViewComponent } from './gifts-view/gifts-view.component';
-import { HomeComponent } from './home/home.component'; 
+import { HomeComponent } from './home/home.component';
+import { GiftboxComponent } from './giftbox/giftbox.component'; 
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { HomeComponent } from './home/home.component';
   declarations: [
     AppComponent,
     GiftsViewComponent,
-    HomeComponent
+    HomeComponent,
+    GiftboxComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
