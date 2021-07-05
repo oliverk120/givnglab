@@ -1,1 +1,8 @@
-<p>giftbox works!</p>
+<h1>Gifts you've liked</h1>
+<div *ngIf="giftboxService.giftbox.length">
+
+  <button class="clear"
+          (click)="giftboxService.clear()">Clear Gifts</button>
+  <div *ngFor='let message of giftboxService.giftbox'> {{message}} </div>
+
+</div>

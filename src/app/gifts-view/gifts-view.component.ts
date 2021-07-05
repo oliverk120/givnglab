@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Gift } from '../gift';
 import { GiftService } from '../gift.service';
+import { GiftboxService } from '../giftbox.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
@@ -18,7 +19,8 @@ export class GiftsViewComponent implements OnInit {
   constructor(  
     private route: ActivatedRoute,
     private router: Router,
-    private giftService: GiftService
+    private giftService: GiftService,
+    private giftboxService: GiftboxService
   ) { }
 
 
@@ -28,6 +30,7 @@ export class GiftsViewComponent implements OnInit {
   
  onSelect(gift: Gift): void {
     this.selectedGift = gift;
+    this.giftboxService.add(`Added gift=${gift.name}`);
   }
 
   getGifts(): void {

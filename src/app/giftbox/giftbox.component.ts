@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GiftboxService } from '../giftbox.service';
 
 @Component({
   selector: 'app-giftbox',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GiftboxComponent implements OnInit {
 
-  constructor() { }
+  constructor(public giftboxService: GiftboxService) { }
 
   ngOnInit(): void {
   }
