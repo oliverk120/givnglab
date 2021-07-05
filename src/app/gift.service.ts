@@ -14,7 +14,6 @@ export class GiftService {
 
 getGifts(): Observable<Gift[]> {
   const gifts = of(GIFTS);
-  this.giftboxService.add('added gifts');
   return gifts;
 }
 

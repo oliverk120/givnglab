@@ -12,7 +12,7 @@ import { switchMap } from 'rxjs/operators';
 })
 export class GiftsViewComponent implements OnInit {
 
-      selectedGift?: Gift;
+ selectedGift?: Gift;
  gifts: Gift[] = [];
 
 
@@ -30,7 +30,7 @@ export class GiftsViewComponent implements OnInit {
   
  onSelect(gift: Gift): void {
     this.selectedGift = gift;
-    this.giftboxService.add(`Added gift=${gift.name}`);
+    this.giftboxService.add(gift);
   }
 
   getGifts(): void {

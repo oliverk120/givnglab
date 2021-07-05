@@ -1,8 +1,26 @@
+
+
+   <div class="row justify-content-center">
+    <div class="col-sm-8" style="text-align: center" >
 <h1>Gifts you've liked</h1>
 <div *ngIf="giftboxService.giftbox.length">
-
-  <button class="clear"
+  <button mat-flat-button color="warn" 
           (click)="giftboxService.clear()">Clear Gifts</button>
-  <div *ngFor='let message of giftboxService.giftbox'> {{message}} </div>
 
+
+
+
+  <mat-grid-list cols="3" rowHeight="2:1" gutterSize="1em">
+  	<mat-grid-tile *ngFor="let gift of giftboxService.giftbox" >
+  	<mat-grid-tile-header>{{gift.type}}</mat-grid-tile-header>
+  	<img src="{{gift.url}}">
+  	<mat-grid-tile-footer>
+  	{{gift.name}}
+ 
+
+  </mat-grid-tile-footer>
+	</mat-grid-tile>
+</mat-grid-list>
+</div>
+</div>
 </div>
