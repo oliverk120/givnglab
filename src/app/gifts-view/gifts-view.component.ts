@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GIFTS } from '../giftsDatabase';
+import { Gift } from '../gift';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
@@ -15,9 +16,15 @@ export class GiftsViewComponent implements OnInit {
     private router: Router
   ) { }
 
+
   ngOnInit(): void {
   }
+  
+  recipient = this.route.snapshot.paramMap.get('recipient');
+  giftsFilter = GIFTS.filter(item => item.recipient === this.recipient);
 
-  recipient = this.route.snapshot.paramMap.get('recipient')
-  gifts = GIFTS;
+  selectedGift?: Gift;
+  onSelect(gift: Gift): void {
+    this.selectedGift = gift;
+  }
 }

@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms'; // <-- NgModel lives here
 
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule} from '@angular/material/select';
@@ -22,6 +23,7 @@ import { HomeComponent } from './home/home.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
     MatSliderModule,
     MatSelectModule,
     MatExpansionModule,
