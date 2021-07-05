@@ -13,7 +13,7 @@
 </div>
 
 <mat-grid-list cols="2" rowHeight="2:1" gutterSize="1em">
-  	<mat-grid-tile *ngFor="let gift of giftsFilter" >
+  	<mat-grid-tile *ngFor="let gift of gifts" >
   	<mat-grid-tile-header>{{gift.type}}</mat-grid-tile-header>
   	<img src="{{gift.url}}">
   	<mat-grid-tile-footer>

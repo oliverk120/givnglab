@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GIFTS } from '../giftsDatabase';
 import { Gift } from '../gift';
+import { GiftService } from '../gift.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
@@ -11,20 +11,34 @@ import { switchMap } from 'rxjs/operators';
 })
 export class GiftsViewComponent implements OnInit {
 
+      selectedGift?: Gift;
+ gifts: Gift[] = [];
+
+
   constructor(  
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private giftService: GiftService
   ) { }
 
 
   ngOnInit(): void {
+    this.getGifts();
   }
   
-  recipient = this.route.snapshot.paramMap.get('recipient');
-  giftsFilter = GIFTS.filter(item => item.recipient === this.recipient);
-
-  selectedGift?: Gift;
-  onSelect(gift: Gift): void {
+ onSelect(gift: Gift): void {
     this.selectedGift = gift;
   }
+
+  getGifts(): void {
+      this.giftService.getGifts()
+      .subscribe(gifts => this.gifts = gifts);
+  }
+
+  recipient = this.route.snapshot.paramMap.get('recipient');
+  giftsFilter = this.gifts;
+  //giftsFilter = this.gifts.filter(item => item.recipient === this.recipient);
+
+
+  
 }
