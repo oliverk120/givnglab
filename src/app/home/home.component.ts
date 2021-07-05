@@ -21,9 +21,7 @@ export class HomeComponent implements OnInit {
     title = 'GivngLAB';
   recipients: Recipient[] = [
     {value: 'mother', viewValue: 'Mother'},
-    {value: 'brothers', viewValue: 'Brothers'},
-    {value: 'baby daughter', viewValue: 'Baby Daughter'},
-    {value: 'wife', viewValue: 'Wife'}
+    {value: 'sister', viewValue: 'Sister'},
   ];
   panelOpenState = false;
   gifts = GIFTS;

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { GIFTS } from './giftsDatabase';
+import { GiftboxService } from './giftbox.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,7 @@ import { GIFTS } from './giftsDatabase';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
+  constructor(  
+    public giftboxService: GiftboxService
+  ) {}
 }

@@ -14,7 +14,7 @@ export class GiftsViewComponent implements OnInit {
 
  selectedGift?: Gift;
  gifts: Gift[] = [];
-
+ recipient: string = '';
 
   constructor(  
     private route: ActivatedRoute,
@@ -36,12 +36,13 @@ export class GiftsViewComponent implements OnInit {
   getGifts(): void {
       this.giftService.getGifts()
       .subscribe(gifts => this.gifts = gifts);
+
+      this.recipient = String(this.route.snapshot.paramMap.get('recipient'));
+
+      if(this.recipient){
+        this.gifts = this.gifts.filter(item => item.recipient === this.recipient)
+      }
+
   }
-
-  recipient = this.route.snapshot.paramMap.get('recipient');
-  giftsFilter = this.gifts;
-  //giftsFilter = this.gifts.filter(item => item.recipient === this.recipient);
-
-
-  
+    
 }
