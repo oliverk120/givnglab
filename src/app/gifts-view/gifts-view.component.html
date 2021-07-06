@@ -1,8 +1,11 @@
+
+
    <div class="row justify-content-center">
     <div class="col-sm-8" style="text-align: center" >
 <h1>Digital Gift Ideas <span *ngIf="recipient"> for your {{recipient}}</span>
 
 </h1>
+
 
 <div *ngIf="selectedGift">
 <h2>Liked Gifts</h2>
@@ -11,8 +14,16 @@
 
 </div>
 </div>
+   <div class="row justify-content-center">
+<mat-paginator class="col-sm-1" [length]="gifts.length"
+                [pageSize]="size"
+                [pageIndex]="page"
+                [pageSizeOptions]="[1, 2, 3]"
+                (page)="getGifts($event)">
+  </mat-paginator>
 
-
+  
+</div>
    <div class="row justify-content-center">
           <div class="col-sm-6" *ngFor="let gift of giftsShow" style="padding: 5px;" >
 <mat-card class="example-card">
@@ -42,12 +53,10 @@
 
 
 </div>
-  <mat-paginator [length]="gifts.length"
-                [pageSize]="size"
-                [pageIndex]="page"
-                [pageSizeOptions]="[1, 2, 3]"
-                (page)="getGifts($event)">
-  </mat-paginator>
+
+
+
+
 </div>
 </div>
 </div>

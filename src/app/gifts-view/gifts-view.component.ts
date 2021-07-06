@@ -18,7 +18,7 @@ export class GiftsViewComponent implements OnInit {
  recipient: string = '';
 
   page = 0;
-  size = 4;
+  size = 1;
 
   constructor(  
     private route: ActivatedRoute,

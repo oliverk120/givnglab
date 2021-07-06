@@ -22,3 +22,12 @@ body, input[type="text"], button {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/*format paginator*/
+.mat-paginator-page-size, .mat-paginator-range-label{
+  display: none !important;
+}
+
+.mat-paginator-navigation-previous {
+  height: 150%;
+}
