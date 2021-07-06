@@ -14,7 +14,11 @@ export class GiftsViewComponent implements OnInit {
 
  selectedGift?: Gift;
  gifts: Gift[] = [];
+ giftsShow: Gift[] = [];
  recipient: string = '';
+
+  page = 0;
+  size = 4;
 
   constructor(  
     private route: ActivatedRoute,
@@ -25,7 +29,7 @@ export class GiftsViewComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getGifts();
+    this.getGifts({pageIndex: this.page, pageSize: this.size});
   }
   
  onSelect(gift: Gift): void {
@@ -33,7 +37,7 @@ export class GiftsViewComponent implements OnInit {
     this.giftboxService.add(gift);
   }
 
-  getGifts(): void {
+  getGifts(obj: {pageIndex: number, pageSize: number}) {
       this.giftService.getGifts()
       .subscribe(gifts => this.gifts = gifts);
 
@@ -42,6 +46,15 @@ export class GiftsViewComponent implements OnInit {
       if(this.recipient){
         this.gifts = this.gifts.filter(item => item.recipient === this.recipient)
       }
+
+      let index=0,
+        startingIndex=obj.pageIndex * obj.pageSize,
+        endingIndex=startingIndex + obj.pageSize;
+
+    this.giftsShow = this.gifts.filter(() => {
+      index++;
+      return (index > startingIndex && index <= endingIndex) ? true : false;
+    });
 
   }
     

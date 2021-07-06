@@ -10,5 +10,6 @@ export const GIFTS: Gift[] = [
   { id: 18, recipient: 'mother', name: 'National Park Pass', type:'Membership', url:'https://store.usgs.gov/s3fs-public/2021AnnualPass.png' },
   { id: 12, recipient: 'sister', name: 'Lululemon - Gift Card', type:'Gift Card', url: 'https://images.lululemon.com/is/image/lululemon/Masonry_1_2_Large_Left_Gift%20card%20masonry'},
   { id: 19, recipient: 'sister', name: 'Masterclass - Cooking ', type:'Digital Subscription', url:'https://www.masterclass.com/course-images/attachments/A5mJ6Qd5pRhrkmS2BWUpUf8X' },
-  { id: 19, recipient: 'sister', name: 'Nuuly - Online Clothing Rental', type:'Physical Subscription', url:'https://media.greenmatters.com/brand-img/o6eTfo-8V/0x0/nuuly-free-people-anthropologie-1558539202663.jpg' }
+  { id: 19, recipient: 'sister', name: 'Nuuly - Online Clothing Rental', type:'Physical Subscription', url:'https://media.greenmatters.com/brand-img/o6eTfo-8V/0x0/nuuly-free-people-anthropologie-1558539202663.jpg' },
+  { id: 19, recipient: 'sister', name: 'Celebrity Cameo - Worlds Most Interesting Man', type:'Other', url:'https://ssl-static.libsyn.com/p/assets/f/3/a/2/f3a203d0a310cbfd/most-interesting-man-goldsmith-1504044751.jpg' }
 ];

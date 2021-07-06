@@ -12,23 +12,42 @@
 </div>
 </div>
 
-<mat-grid-list cols="2" rowHeight="2:1" gutterSize="1em">
-  	<mat-grid-tile *ngFor="let gift of gifts" >
-  	<mat-grid-tile-header>{{gift.type}}</mat-grid-tile-header>
-  	<img src="{{gift.url}}">
-  	<mat-grid-tile-footer>
-  	{{gift.name}}
-  	
-  		<button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+
+   <div class="row justify-content-center">
+          <div class="col-sm-6" *ngFor="let gift of giftsShow" style="padding: 5px;" >
+<mat-card class="example-card">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>{{gift.name}}</mat-card-title>
+    <mat-card-subtitle>{{gift.type}}</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image src="{{gift.url}}" alt="{{gift.name}}" style="width: 100%; height: 337px; object-fit: cover;">
+  <mat-card-content>
+    <p>
+      The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+      A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
+      bred for hunting.
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
     <mat-icon (click)="onSelect(gift)" color="warn">favorite</mat-icon>
   </button>
   <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
     <mat-icon>share</mat-icon>
   </button>
+  </mat-card-actions>
+</mat-card>
 
 
-  </mat-grid-tile-footer>
-	</mat-grid-tile>
-</mat-grid-list>
+
+</div>
+  <mat-paginator [length]="gifts.length"
+                [pageSize]="size"
+                [pageIndex]="page"
+                [pageSizeOptions]="[1, 2, 3]"
+                (page)="getGifts($event)">
+  </mat-paginator>
+</div>
 </div>
 </div>

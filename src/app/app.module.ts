@@ -14,6 +14,8 @@ import { MatGridListModule} from '@angular/material/grid-list';
 import { MatToolbarModule} from '@angular/material/toolbar'; 
 import { MatIconModule} from '@angular/material/icon';
 import { MatButtonModule} from '@angular/material/button';
+import { MatCardModule} from '@angular/material/card'; 
+import { MatPaginatorModule} from '@angular/material/paginator';
 
 import { GiftsViewComponent } from './gifts-view/gifts-view.component';
 import { HomeComponent } from './home/home.component';
@@ -32,7 +34,9 @@ import { GiftboxComponent } from './giftbox/giftbox.component';
     MatGridListModule,
     MatToolbarModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule,
+    MatPaginatorModule
   ],
   declarations: [
     AppComponent,
