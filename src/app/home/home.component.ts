@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
   recipients: Recipient[] = [
     {value: 'mother', viewValue: 'Mother'},
     {value: 'sister', viewValue: 'Sister'},
+    {value: 'brother', viewValue: 'Brother'},
   ];
   panelOpenState = false;
   gifts = GIFTS;
