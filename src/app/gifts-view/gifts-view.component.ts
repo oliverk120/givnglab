@@ -15,7 +15,7 @@ export class GiftsViewComponent implements OnInit {
  selectedGift?: Gift;
  gifts: Gift[] = [];
  giftsShow: Gift[] = [];
- recipient: string = '';
+ recipient: any = null;
 
   page = 0;
   size = 1;
