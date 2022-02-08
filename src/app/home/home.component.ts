@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
 
     title = 'GivngLAB';
   recipients: Recipient[] = [
+    {value: 'boyfriend', viewValue: 'Boyfriend'},
     {value: 'mother', viewValue: 'Mother'},
     {value: 'sister', viewValue: 'Sister'},
     {value: 'brother', viewValue: 'Brother'},

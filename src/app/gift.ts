@@ -9,4 +9,16 @@ export interface Gift {
   description: string;
   package: string;
   price: string;
+  pricetiers:{description: string; price: number};
+}
+
+export interface ExternalGiftList {
+  title:string;
+  source_url: string;
+  source_name: string;
+  source_logo_url: string;
+  tags: string[];
+  recipient:string;
+  date: string;
+  gifts:any;
 }
