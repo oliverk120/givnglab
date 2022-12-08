@@ -1,7 +1,7 @@
 export interface Gift {
   id: number;
   name: string;
-  url: string;
+  image_url: string;
   type: string;
   recipient: string;
   brand: string;

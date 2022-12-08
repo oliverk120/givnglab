@@ -8,7 +8,7 @@ export const GIFTS: Gift[] = [
       "recipient":"mother",
       "name":"National Geographic Channel",
       "type":"Digital Subscription",
-      "url":"https://i.ytimg.com/vi/BHgo3oB0A5Q/hqdefault.jpg",
+      "image_url":"https://i.ytimg.com/vi/BHgo3oB0A5Q/hqdefault.jpg",
       "description":"Watch full episodes, specials and documentaries with National Geographic TV channel online.",
       "package":"", "pricetiers":{"description": "", "price":0},
       "price":"$12 - $120"
@@ -20,7 +20,7 @@ export const GIFTS: Gift[] = [
       "recipient":"brother",
       "name":"Marvel Franchise Streaming Subscription",
       "type":"Digital Subscription",
-      "url":"https://cdn.images.express.co.uk/img/dynamic/36/590x/Ant-Man-and-the-Wasp-Netflix-disney-streaming-last-Marvel-movie-1000683.jpg?r=1533735893712",
+      "image_url":"https://cdn.images.express.co.uk/img/dynamic/36/590x/Ant-Man-and-the-Wasp-Netflix-disney-streaming-last-Marvel-movie-1000683.jpg?r=1533735893712",
       "description":"",
       "package":"", "pricetiers":{"description": "", "price":0},
       "price":"$12 - $120"
@@ -32,7 +32,7 @@ export const GIFTS: Gift[] = [
       "recipient":"brother",
       "name":"Ad Free Youtube Experience",
       "type":"Digital Subscription",
-      "url":"https://www.cnet.com/a/img/a0FFE0VNinTZqaHael9X2b5czFc=/1200x675/2020/01/01/301595b2-19b5-4399-94a2-718b3e3ed15c/youtube-logo-laptop-4692.jpg",
+      "image_url":"https://www.cnet.com/a/img/a0FFE0VNinTZqaHael9X2b5czFc=/1200x675/2020/01/01/301595b2-19b5-4399-94a2-718b3e3ed15c/youtube-logo-laptop-4692.jpg",
       "description":"Get your youtube obsessed giftee a premium account so they dont have to watch endless ads",
       "package":"", "pricetiers":{"description": "", "price":0},
       "price":"$12 - $180"
@@ -47,7 +47,7 @@ export const GIFTS: Gift[] = [
       "recipient":"mother",
       "name":"Wine Subscription",
       "type":"Physical Subscription",
-      "url":"https://sell.cratejoy.com/wp-content/uploads/2016/04/wine-subscription-box-815x611.jpg"
+      "image_url":"https://sell.cratejoy.com/wp-content/uploads/2016/04/wine-subscription-box-815x611.jpg"
    },
    {
       "id":13,
@@ -59,7 +59,7 @@ export const GIFTS: Gift[] = [
       "recipient":"brother",
       "name":"Grill Master Club",
       "type":"Physical Subscription",
-      "url":"https://cdn.filestackcontent.com/auto_image/cache=expiry:max/vQqGlJToQBit02SVD1uJ"
+      "image_url":"https://cdn.filestackcontent.com/auto_image/cache=expiry:max/vQqGlJToQBit02SVD1uJ"
    },
    {
       "id":14,
@@ -71,7 +71,7 @@ export const GIFTS: Gift[] = [
       "recipient":"sister",
       "name":"Dog Food Subscription",
       "type":"Physical Subscription",
-      "url":"https://cdn.filestackcontent.com/auto_image/cache=expiry:max/vYjkMYyIQvGgHyQ82cSk"
+      "image_url":"https://cdn.filestackcontent.com/auto_image/cache=expiry:max/vYjkMYyIQvGgHyQ82cSk"
    },
    {
       "id":15,
@@ -83,7 +83,7 @@ export const GIFTS: Gift[] = [
       "recipient":"mother",
       "name":"Soap Subscription",
       "type":"Physical Subscription",
-      "url":"https://cdn.filestackcontent.com/auto_image/cache=expiry:max/UmAGhWJSTNy17rzdfIoz"
+      "image_url":"https://cdn.filestackcontent.com/auto_image/cache=expiry:max/UmAGhWJSTNy17rzdfIoz"
    },
    {
       "id":16,
@@ -95,7 +95,7 @@ export const GIFTS: Gift[] = [
       "recipient":"brother",
       "name":"Documentary Streaming Subscription",
       "type":"Digital Subscription",
-      "url":"https://www.soda.com/wp-content/uploads/2020/08/CuriosityStream-Review.png"
+      "image_url":"https://www.soda.com/wp-content/uploads/2020/08/CuriosityStream-Review.png"
    },
    {
       "id":17,
@@ -107,7 +107,7 @@ export const GIFTS: Gift[] = [
       "recipient":"mother",
       "name":"Meditation App Subscription",
       "type":"Membership",
-      "url":"https://www.boldbusiness.com/wp-content/uploads/2019/04/Feature-Image-8.jpg"
+      "image_url":"https://www.boldbusiness.com/wp-content/uploads/2019/04/Feature-Image-8.jpg"
    },
    {
       "id":18,
@@ -119,7 +119,7 @@ export const GIFTS: Gift[] = [
       "recipient":"mother",
       "name":"Park Pass",
       "type":"Membership",
-      "url":"https://store.usgs.gov/s3fs-public/2021AnnualPass.png"
+      "image_url":"https://store.usgs.gov/s3fs-public/2021AnnualPass.png"
    },
    {
       "id":12,
@@ -131,7 +131,7 @@ export const GIFTS: Gift[] = [
       "recipient":"brother",
       "name":"Gift Card",
       "type":"Gift Card",
-      "url":"https://pyxis.nymag.com/v1/imgs/68d/41c/779b791343d53fde78656af60fa122d97a-31-pants-ode.rhorizontal.w700.jpg"
+      "image_url":"https://pyxis.nymag.com/v1/imgs/68d/41c/779b791343d53fde78656af60fa122d97a-31-pants-ode.rhorizontal.w700.jpg"
    },
    {
       "id":19,
@@ -143,7 +143,7 @@ export const GIFTS: Gift[] = [
       "recipient":"sister",
       "name":"Thomas Keller - Cooking techniques ",
       "type":"Digital Subscription",
-      "url":"https://www.masterclass.com/course-images/attachments/A5mJ6Qd5pRhrkmS2BWUpUf8X"
+      "image_url":"https://www.masterclass.com/course-images/attachments/A5mJ6Qd5pRhrkmS2BWUpUf8X"
    },
    {
       "id":19,
@@ -155,7 +155,7 @@ export const GIFTS: Gift[] = [
       "recipient":"sister",
       "name":"Online Clothing Rental",
       "type":"Physical Subscription",
-      "url":"https://media.greenmatters.com/brand-img/o6eTfo-8V/0x0/nuuly-free-people-anthropologie-1558539202663.jpg"
+      "image_url":"https://media.greenmatters.com/brand-img/o6eTfo-8V/0x0/nuuly-free-people-anthropologie-1558539202663.jpg"
    },
    {
       "id":19,
@@ -167,6 +167,6 @@ export const GIFTS: Gift[] = [
       "recipient":"sister",
       "name":"Worlds Most Interesting Man",
       "type":"Other",
-      "url":"https://ssl-static.libsyn.com/p/assets/f/3/a/2/f3a203d0a310cbfd/most-interesting-man-goldsmith-1504044751.jpg"
+      "image_url":"https://ssl-static.libsyn.com/p/assets/f/3/a/2/f3a203d0a310cbfd/most-interesting-man-goldsmith-1504044751.jpg"
    }
  ]; 
