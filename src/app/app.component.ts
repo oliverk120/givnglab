@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { GIFTS } from './giftsDatabase';
 import { GiftboxService } from './giftbox.service';
 
 @Component({

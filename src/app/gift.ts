@@ -10,6 +10,7 @@ export interface Gift {
   package: string;
   price: string;
   pricetiers:{description: string; price: number};
+  source_info: ExternalGiftList;
 }
 
 export interface ExternalGiftList {

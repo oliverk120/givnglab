@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GIFTS } from '../giftsDatabase';
 
 interface Recipient {
   value: string;
@@ -26,7 +25,6 @@ export class HomeComponent implements OnInit {
     {value: 'brother', viewValue: 'Brother'},
   ];
   panelOpenState = false;
-  gifts = GIFTS;
   selectedRecipient = '';
 
 }

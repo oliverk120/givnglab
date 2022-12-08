@@ -77,8 +77,8 @@
         <mat-card-actions>
          <div class="row justify-content-center">
           <div class="col-sm-8" style="text-align:left; color: grey;">
-            This gift suggestion was provided by: <img src="{{extgifts[0].source_logo_url}}" width="80px">. <br/>
-            See the original list at: <a href="{{extgifts[0].source_url}}">{{extgifts[0].title}}</a>
+            This gift suggestion was provided by: <img src="{{gift.source_info.source_logo_url}}" width="80px">. <br/>
+            See the original list at: <a href="{{gift.source_info.source_url}}">{{gift.source_info.title}}</a>
           </div>
           <div class="col-sm-4">  
             <span class="card-price">{{gift.price}}</span>
