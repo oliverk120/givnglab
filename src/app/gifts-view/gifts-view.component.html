@@ -1,72 +1,96 @@
-
-
-   <div class="row justify-content-center">
-    <div class="col-sm-8" style="text-align: center" >
-<h1>Digital Gift Ideas <span *ngIf="recipient"> for your {{recipient}}</span>
-
-</h1>
-Extgifts:
-{{extgifts[0].title}}
-
-<div *ngIf="selectedGift">
-<h2>Liked Gifts</h2>
-<div>
-  <label for="hero-name">Gift Name: {{selectedGift.name}} </label>
-
-</div>
-</div>
-   <div class="row justify-content-center">
-<mat-paginator class="col-sm-1" [length]="extgiftslist.length"
-                [pageSize]="size"
-                [pageIndex]="page"
-                [pageSizeOptions]="[1, 2, 3]"
-                (page)="getExtGifts($event)">
-  </mat-paginator>
-
-
-</div>
-   <div class="row justify-content-center">
-          <div class="col-sm-6" *ngFor="let gift of extGiftsShow" style="padding: 5px;" >
-            <style type="text/css">
-              .example-header-image {
-  background-size: cover;
-}
-            </style>
-<mat-card class="example-card">
-  <mat-card-header>
-    <!--<div mat-card-avatar class="example-header-image" [ngStyle]="{'background-image': 'url(' + gift.brandlogoUrl + ')'}"></div>-->
-    <mat-card-title>{{gift.brand}} - {{gift.name}}</mat-card-title>
-    <mat-card-subtitle>{{gift.type}}</mat-card-subtitle>
-  </mat-card-header>
-  <img mat-card-image src="{{gift.image_url}}" alt="{{gift.name}}" style="width: 100%; height: 337px; object-fit: cover;">
-  <mat-card-content>
-    <div class="row justify-content-center">
-    <div class="col-sm-10" style="min-height: 100px">  {{gift.description}} </div>
-    <div class="col-sm-2">      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-    <mat-icon (click)="onSelect(gift)" color="warn">favorite</mat-icon>
+<!-- create a sidebar with several listed menu items -->
+<mat-sidenav-container class="example-container">
+  <!-- add a button that opens the sidenav-->
+  <button mat-button (click)="sidenav.open()">
+    <mat-icon>menu</mat-icon>
   </button>
+  <mat-sidenav #sidenav mode="side" opened="true">
+    <mat-nav-list>
 
-</div>
+      <!-- create a button that closes the sidenav when clicked -->
+      <button mat-button (click)="sidenav.close()">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <!-- create a loop that enumerates extgifts.title property -->
+      <a mat-list-item *ngFor="let extgifts of extgifts">
+        {{extgifts.title}}
+      </a>
+
+    </mat-nav-list>
+  </mat-sidenav>
+
+
+
+  <div class="row justify-content-center">
+    <div class="col-sm-8" style="text-align: center" >
+      <h1>Digital Gift Ideas <span *ngIf="recipient"> for your {{recipient}}</span>
+
+      </h1>
+      Extgifts:
+      {{extgifts[0].title}}
+
+
+
+      <div *ngIf="selectedGift">
+        <h2>Liked Gifts</h2>
+        <div>
+          <label for="hero-name">Gift Name: {{selectedGift.name}} </label>
+
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <mat-paginator class="col-sm-1" [length]="extgiftslist.length"
+        [pageSize]="size"
+        [pageIndex]="page"
+        [pageSizeOptions]="[1, 2, 3]"
+        (page)="getExtGifts($event)">
+      </mat-paginator>
+
+
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-sm-6" *ngFor="let gift of extGiftsShow" style="padding: 5px;" >
+        <style type="text/css">
+          .example-header-image {
+            background-size: cover;
+          }
+        </style>
+        <mat-card class="example-card">
+          <mat-card-header>
+            <!--<div mat-card-avatar class="example-header-image" [ngStyle]="{'background-image': 'url(' + gift.brandlogoUrl + ')'}"></div>-->
+            <mat-card-title>{{gift.brand}} - {{gift.name}}</mat-card-title>
+            <mat-card-subtitle>{{gift.type}}</mat-card-subtitle>
+          </mat-card-header>
+          <img mat-card-image src="{{gift.image_url}}" alt="{{gift.name}}" style="width: 100%; height: 337px; object-fit: cover;">
+          <mat-card-content>
+            <div class="row justify-content-center">
+              <div class="col-sm-10" style="min-height: 100px">  {{gift.description}} </div>
+              <div class="col-sm-2">      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+                <mat-icon (click)="onSelect(gift)" color="warn">favorite</mat-icon>
+              </button>
+
+            </div>
+          </div>
+
+        </mat-card-content>
+        <mat-card-actions>
+         <div class="row justify-content-center">
+          <div class="col-sm-8" style="text-align:left; color: grey;">
+            This gift suggestion was provided by: <img src="{{extgifts[0].source_logo_url}}" width="80px">. <br/>
+            See the original list at: <a href="{{extgifts[0].source_url}}">{{extgifts[0].title}}</a>
+          </div>
+          <div class="col-sm-4">  
+            <span class="card-price">{{gift.price}}</span>
+          </div>
+        </div>
+      </mat-card-actions>
+
+    </mat-card>
+
+
+
   </div>
-
-  </mat-card-content>
-  <mat-card-actions>
-     <div class="row justify-content-center">
-    <div class="col-sm-8" style="text-align:left; color: grey;">
-  This gift suggestion was provided by: <img src="{{extgifts[0].source_logo_url}}" width="80px">. <br/>
-  See the original list at: <a href="{{extgifts[0].source_url}}">{{extgifts[0].title}}</a>
-</div>
-<div class="col-sm-4">  
-  <span class="card-price">{{gift.price}}</span>
-</div>
-</div>
-</mat-card-actions>
-
-</mat-card>
-
-
-
-</div>
 
 
 

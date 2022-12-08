@@ -22,7 +22,7 @@ export class GiftsViewComponent implements OnInit {
  recipient: any = null; 
 
   page = 0;
-  size = 2;
+  size = 500;
 
   constructor(  
     private route: ActivatedRoute,
@@ -78,10 +78,24 @@ export class GiftsViewComponent implements OnInit {
         this.extgifts = this.extgifts.filter(item => item.recipient === this.recipient)
       }
 
-      // start actually listing the gifts from the object
-      this.extgiftslist = this.extgifts[0].gifts;
+      //This loop below creates the list of gifts and appends the tags from the source to each individual gift item
+      // THIS LOGIC SHOULD PROBABLY BE IN THE SERVICE _ I"LL FIX THAT LATER
+      for (var i = 0; i < this.extgifts.length; i++) {
+        //loop through each gifts in extgifts and add to extgiftslist
+        for (var j = 0; j < this.extgifts[i].gifts.length; j++) {
+          //add the following properties to each gift in extgifts
+          this.extgifts[i].gifts[j].source_title = this.extgifts[i].title;
+          this.extgifts[i].gifts[j].source_url = this.extgifts[i].source_url;
+          this.extgifts[i].gifts[j].source_name = this.extgifts[i].source_name;
+          this.extgifts[i].gifts[j].source_logo_url = this.extgifts[i].source_logo_url;
+          this.extgifts[i].gifts[j].tags = this.extgifts[i].tags;
+          this.extgifts[i].gifts[j].recipient = this.extgifts[i].recipient;
+          // add each gift with the additional properties into extfiftslist
+          this.extgiftslist.push(this.extgifts[i].gifts[j]);
+        }
+      }
+      
 
-      console.log(this.extgifts);
       let index=0,
         startingIndex=obj.pageIndex * obj.pageSize,
         endingIndex=startingIndex + obj.pageSize;
@@ -90,7 +104,9 @@ export class GiftsViewComponent implements OnInit {
         index++;
         return (index > startingIndex && index <= endingIndex) ? true : false;
       });
-  
+  console.log(this.extgiftslist);
+console.log(this.extGiftsShow);
+
   }
     
 }

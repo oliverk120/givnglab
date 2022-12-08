@@ -16,10 +16,12 @@ import { MatIconModule} from '@angular/material/icon';
 import { MatButtonModule} from '@angular/material/button';
 import { MatCardModule} from '@angular/material/card'; 
 import { MatPaginatorModule} from '@angular/material/paginator';
-
+import { MatSidenavModule} from '@angular/material/sidenav';
 import { GiftsViewComponent } from './gifts-view/gifts-view.component';
 import { HomeComponent } from './home/home.component';
 import { GiftboxComponent } from './giftbox/giftbox.component'; 
+//add mat nav list
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   imports: [
@@ -36,7 +38,9 @@ import { GiftboxComponent } from './giftbox/giftbox.component';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSidenavModule,
+    MatListModule
   ],
   declarations: [
     AppComponent,
