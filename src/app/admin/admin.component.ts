@@ -7,11 +7,11 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-gifts-view',
-  templateUrl: './gifts-view.component.html',
-  styleUrls: ['./gifts-view.component.css']
+  selector: 'app-admin',
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css']
 })
-export class GiftsViewComponent implements OnInit {
+export class AdminComponent implements OnInit {
 
  selectedGift?: Gift;
  gifts: Gift[] = [];
@@ -19,17 +19,17 @@ export class GiftsViewComponent implements OnInit {
  extgifts: ExternalGiftList[] = [];
  extGiftsShow: Gift[] = [];
  recipient: any = null; 
-
   page = 0;
   size = 500;
+  displayedColumns: string[] = ['name', 'image_url', 'description', 'price'];
+  //displayedColumns: string[] = ['price', 'name', 'brand', 'type', 'description', 'package', 'image_url', 'brandlogoUrl', 'source_info', 'pricetiers', 'add'];
 
-  constructor(  
+  constructor(
     private route: ActivatedRoute,
     private router: Router,
     private giftService: GiftService,
     private giftboxService: GiftboxService
   ) { }
-
 
   ngOnInit(): void {
     this.getExtGifts({pageIndex: this.page, pageSize: this.size});
@@ -40,22 +40,13 @@ export class GiftsViewComponent implements OnInit {
     this.giftboxService.add(gift);
   }
 
-  getExtGifts(obj: {pageIndex: number, pageSize: number}) {
+
+    getExtGifts(obj: {pageIndex: number, pageSize: number}) {
       
       this.giftService.getExtGifts()
       .subscribe(extgifts => this.extgifts = extgifts);
    
-      this.recipient = String(this.route.snapshot.paramMap.get('recipient'));
-      
-        console.log(this.extgifts);
-
-
-      //This filters out entire lists depending on whether the recipients match... consider eventually doing it at the individual gift level, but for now this is fine
-      if(this.recipient){
-        this.extgifts = this.extgifts.filter(item => item.recipient === this.recipient)
-      }
-
-      //This loop below creates the list of gifts 
+       //This loop below creates the list of gifts 
       // THIS LOGIC SHOULD maybe? BE IN THE SERVICE _ I"LL FIX THAT LATER
       for (var i = 0; i < this.extgifts.length; i++) {
         //loop through each gifts in extgifts and add to extgiftslist
@@ -73,8 +64,8 @@ export class GiftsViewComponent implements OnInit {
         index++;
         return (index > startingIndex && index <= endingIndex) ? true : false;
       });
-
+      console.log(this.extGiftsShow);
 
   }
-    
+
 }

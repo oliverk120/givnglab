@@ -22,6 +22,9 @@ import { HomeComponent } from './home/home.component';
 import { GiftboxComponent } from './giftbox/giftbox.component'; 
 //add mat nav list
 import { MatListModule } from '@angular/material/list';
+//add table module
+import { MatTableModule } from '@angular/material/table';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   imports: [
@@ -40,13 +43,15 @@ import { MatListModule } from '@angular/material/list';
     MatCardModule,
     MatPaginatorModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatTableModule
   ],
   declarations: [
     AppComponent,
     GiftsViewComponent,
     HomeComponent,
-    GiftboxComponent
+    GiftboxComponent,
+    AdminComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
