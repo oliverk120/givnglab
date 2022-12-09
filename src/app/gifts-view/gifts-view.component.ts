@@ -44,11 +44,13 @@ export class GiftsViewComponent implements OnInit {
       
       this.giftService.getExtGifts()
       .subscribe(extgifts => this.extgifts = extgifts);
-      console.log(this.extgifts[0].title);
-
    
       this.recipient = String(this.route.snapshot.paramMap.get('recipient'));
       
+        console.log(this.extgifts);
+
+
+      //This filters out entire lists depending on whether the recipients match... consider eventually doing it at the individual gift level, but for now this is fine
       if(this.recipient){
         this.extgifts = this.extgifts.filter(item => item.recipient === this.recipient)
       }
@@ -86,8 +88,7 @@ export class GiftsViewComponent implements OnInit {
         index++;
         return (index > startingIndex && index <= endingIndex) ? true : false;
       });
-  console.log(this.extgiftslist);
-console.log(this.extGiftsShow);
+
 
   }
     

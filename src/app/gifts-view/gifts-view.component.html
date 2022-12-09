@@ -14,12 +14,13 @@
 
       <!-- create a loop that enumerates extgifts.title property -->
       <a mat-list-item *ngFor="let extgifts of extgifts">
+        <img src="{{extgifts.source_logo_url}}" width="50px" alt="logo"> | 
         {{extgifts.title}}
+        
       </a>
 
     </mat-nav-list>
   </mat-sidenav>
-
 
 
   <div class="row justify-content-center">
