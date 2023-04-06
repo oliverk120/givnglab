@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import fs from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
+import {
+  Box,
+  Heading,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Input,
+  LinkBox,
+  LinkOverlay,
+} from '@chakra-ui/react';
+import Image from 'next/image';
 
 // Define the type for the gift object
 type Gift = {
@@ -16,23 +30,69 @@ type Gift = {
 
 // React component to render the list of gifts
 const Gifts: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter the gift list based on the search term
+  const filteredGiftList = giftList.filter((gift) =>
+    gift.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div>
-      <h1>Gifts List</h1>
-      <ul>
-        {giftList.map((gift, index) => (
-          <li key={index}>
-            <div>Name: {gift.name}</div>
-            <div><img src={gift.image_url} alt={gift.name} /></div>
-            <div>Brand: {gift.brand}</div>
-            <div>Product Source URL: <a href={gift.product_source_url}>{gift.product_source_url}</a></div>
-            <div>Description: {gift.description}</div>
-            <div>Price: {gift.price}</div>
-            <div>Gift Source URL: <a href={gift.giftsource_url}>{gift.giftsource_url}</a></div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Box maxW="container.xl" mx="auto" p={4}>
+      <Heading as="h1" mb={4} textAlign="center">
+        Gifts List
+      </Heading>
+      <Input
+        placeholder="Search for gifts..."
+        mb={4}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <Table variant="simple" size="lg" width="full">
+        <Thead bg="gray.100">
+          <Tr>
+            <Th>Name</Th>
+            <Th>Image</Th>
+            <Th>Brand</Th>
+            <Th>Product URL</Th>
+            <Th>Description</Th>
+            <Th>Price</Th>
+            <Th>Gift Source URL</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {filteredGiftList.map((gift, index) => (
+            <Tr key={index}>
+              <Td>{gift.name}</Td>
+              <Td>
+                <Image
+                  src={gift.image_url}
+                  alt={gift.name}
+                  width={100}
+                  height={100}
+                />
+              </Td>
+              <Td>{gift.brand}</Td>
+              <Td>
+                <LinkBox>
+                  <LinkOverlay href={gift.product_source_url} isExternal>
+                    Link
+                  </LinkOverlay>
+                </LinkBox>
+              </Td>
+              <Td>{gift.description}</Td>
+              <Td>{gift.price}</Td>
+              <Td>
+                <LinkBox>
+                  <LinkOverlay href={gift.giftsource_url} isExternal>
+                    Link
+                  </LinkOverlay>
+                </LinkBox>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
   );
 };
 
@@ -48,8 +108,7 @@ export async function getStaticProps() {
     header: true,
     skipEmptyLines: true,
   });
-  const giftList = result.data as Gift[]; // Add the type assertion here
-
+  const giftList = result.data as Gift[];
 
   // Pass the parsed data as props to the page component
   return {
