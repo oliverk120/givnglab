@@ -13,7 +13,7 @@ const Navbar = ({ showLogo = true, transparentBg = false }) => {
             <Link mx={4} display="flex" alignItems="center">
               <Image src="/logo-bg.png" alt="Logo" boxSize="40px" />
               <Text ml={2} fontFamily="'Poppins', sans-serif" fontWeight="bold">
-                Project Name
+                GivngLab
               </Text>
             </Link>
           </NextLink>

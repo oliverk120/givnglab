@@ -23,6 +23,7 @@ const Preprocess: React.FC = () => {
       // Define state variables for duplicates and missing values
     const [duplicates, setDuplicates] = useState<Gift[]>([]);
     const [missingValues, setMissingValues] = useState<Gift[]>([]);
+    const [itemsWithNonNumericPrice, setItemsWithNonNumericPrice] = useState<Gift[]>([]);
 
   // Fetch the list of available CSV files
   useEffect(() => {
@@ -67,12 +68,14 @@ const Preprocess: React.FC = () => {
       console.log('Preprocessed data:', preprocessedData); // Debug: Log the preprocessed data
       setError(null);
 
-      // Call identifyIssues function to identify duplicates and items with missing values
-      const { duplicateItems, itemsWithMissingValues } = identifyIssues(preprocessedData);
+      // Call identifyIssues function to identify duplicates, items with missing values, and non-numeric prices
+      const { duplicateItems, itemsWithMissingValues, itemsWithNonNumericPrice } = identifyIssues(preprocessedData);
 
-      // Update the state with duplicates and items with missing values
+      // Update the state with duplicates, items with missing values, and items with non-numeric prices
       setDuplicates(duplicateItems);
       setMissingValues(itemsWithMissingValues);
+      setItemsWithNonNumericPrice(itemsWithNonNumericPrice);
+
 
     } catch (error) {
       // Use a type assertion to specify that 'error' is of type 'Error'
@@ -110,8 +113,9 @@ const Preprocess: React.FC = () => {
       </VStack>
       <CleanData
       giftList={loadedGiftList}
-      duplicates={duplicates} // Pass the duplicates prop
-      missingValues={missingValues} // Pass the missingValues prop
+      duplicates={duplicates}
+      missingValues={missingValues}
+      itemsWithNonNumericPrice={itemsWithNonNumericPrice} // Pass the prop
     />
     </>
   );
