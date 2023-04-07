@@ -42,10 +42,13 @@ const Dashboard: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
   // State to manage the visibility of brands with only one item
   const [showSingleItemBrands, setShowSingleItemBrands] = useState(false);
 
-  // Filter the brands to display
-  const displayedBrands = showSingleItemBrands
-    ? giftsPerBrand
-    : Object.fromEntries(Object.entries(giftsPerBrand).filter(([, count]) => count > 1));
+  // Sort brands by gift count in descending order
+  const sortedBrands = Object.entries(giftsPerBrand).sort((a, b) => b[1] - a[1]);
+  
+  // Filter the brands to display based on showSingleItemBrands and convert back to object
+  const displayedBrands = Object.fromEntries(
+    showSingleItemBrands ? sortedBrands : sortedBrands.filter(([, count]) => count > 1)
+  );
 
   // Define price buckets
   const priceBuckets = [
@@ -74,7 +77,10 @@ const Dashboard: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
   // Group the gifts into the specified price buckets and count the number of gifts in each bucket
   const histogramData = priceBuckets.map((bucket) => {
     const count = giftList.filter(
-      (gift) => parseFloat(gift.price) >= bucket.min && parseFloat(gift.price) < bucket.max
+      (gift) => {
+        const priceNumber = parseFloat(gift.price.replace('$', '')); // Remove "$" and parse as float
+        return priceNumber >= bucket.min && priceNumber < bucket.max;
+      }
     ).length;
     return { label: bucket.label, count };
   });

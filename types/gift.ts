@@ -7,5 +7,6 @@ export type Gift = {
     description: string;
     price: string;
     giftsource_url: string;
+    body_text: string;
   };
   
