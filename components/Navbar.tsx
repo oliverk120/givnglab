@@ -28,6 +28,9 @@ const Navbar = ({ showLogo = true, transparentBg = false }) => {
         <NextLink href="/dashboard" passHref>
           <Link mx={4}>Dashboard</Link>
         </NextLink>
+        <NextLink href="/preprocess" passHref>
+          <Link mx={4}>Preprocess</Link>
+        </NextLink>
         {/* Add more links for additional pages here */}
       </Flex>
     </Box>
