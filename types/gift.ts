@@ -1,5 +1,6 @@
 // types/gift.ts
 export type Gift = {
+    id: string; 
     name: string;
     image_url: string;
     brand: string;

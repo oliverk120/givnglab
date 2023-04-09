@@ -38,7 +38,7 @@ const CleanData: React.FC<{
   const [cleanedGiftList, setCleanedGiftList] = React.useState<Gift[]>(giftList || []);
   const [selectedErrorCategory, setSelectedErrorCategory] = React.useState<ErrorCategory>(null);
   const [tableCategory, setTableCategory] = useState<TableCategory>(null);
-  const [editingCell, setEditingCell] = useState<{ rowIndex: number; key: keyof Gift } | null>(null);
+  const [editingCell, setEditingCell] = useState<{ id: string; key: keyof Gift } | null>(null);
 
 
   // Use the useEffect hook to set the cleanedGiftList state
@@ -136,21 +136,6 @@ const handleStripDollarSigns = () => {
    // Create a reference for the "Remove Duplicates" button
    const removeDuplicatesButtonRef = useRef<HTMLButtonElement>(null);
  
-   const handleCellClick = (rowIndex: number, key: keyof Gift) => {
-    setEditingCell({ rowIndex, key });
-  };
-  
-  const handleCellBlur = (event: React.FocusEvent<HTMLTableDataCellElement>, rowIndex: number, key: keyof Gift) => {
-    const newValue = event.target.textContent || '';
-    setCleanedGiftList((prevGiftList) => {
-      const updatedGiftList = [...prevGiftList];
-      updatedGiftList[rowIndex][key] = newValue;
-      updateCleanedGiftList(updatedGiftList);
-      return updatedGiftList;
-    });
-    setEditingCell(null);
-  };
-  
 
 
   const renderTable = () => {
@@ -162,24 +147,45 @@ const handleStripDollarSigns = () => {
     let tableData: Gift[] = [];
     switch (tableCategory) {
       case 'all':
-        tableData = cleanedGiftList;
+        tableData = cleanedGiftList; // You can directly use cleanedGiftList
         break;
       case 'duplicates':
-        tableData = duplicates;
+        tableData = duplicates; // You can directly use duplicates
         break;
       case 'withErrors':
-        // Combine duplicates, missingValues, and itemsWithNonNumericPrice to get all gifts with errors
         tableData = [...duplicates, ...missingValues, ...itemsWithNonNumericPrice];
         break;
       case 'missingValues':
-        tableData = missingValues;
+        tableData = missingValues; // You can directly use missingValues
         break;
       case 'nonNumericPrice':
-        tableData = itemsWithNonNumericPrice;
+        tableData = itemsWithNonNumericPrice; // You can directly use itemsWithNonNumericPrice
         break;
       default:
         break;
     }
+    
+    const handleCellClick = (id: string, key: keyof Gift) => {
+      setEditingCell({ id, key });
+    };
+  
+    const handleCellBlur = (
+      event: React.FocusEvent<HTMLTableDataCellElement>,
+      id: string,
+      key: keyof Gift
+    ) => {
+      const newValue = event.target.textContent || '';
+      setCleanedGiftList((prevGiftList) => {
+        const updatedGiftList = [...prevGiftList];
+        const giftIndex = updatedGiftList.findIndex((gift) => gift.id === id);
+        if (giftIndex >= 0) {
+          updatedGiftList[giftIndex][key] = newValue;
+        }
+        updateCleanedGiftList(updatedGiftList);
+        return updatedGiftList;
+      });
+      setEditingCell(null);
+    };
 
     return (
       <Table variant="simple">
@@ -197,67 +203,67 @@ const handleStripDollarSigns = () => {
         </Thead>
         <Tbody>
           {tableData.map((item, index) => (
-            <Tr key={index}>
-              <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'name'}
-                onBlur={(e) => handleCellBlur(e, index, 'name')}
-                onClick={() => handleCellClick(index, 'name')}
-                bg={item.name === '' ? 'yellow' : ''}
-              >
-                {truncateText(item.name, 200)}
-              </Td>
-              <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'image_url'}
-                onBlur={(e) => handleCellBlur(e, index, 'image_url')}
-                onClick={() => handleCellClick(index, 'image_url')}
-                bg={item.image_url === '' ? 'yellow' : ''}
-              >
-                {truncateText(item.image_url, 20)}
-              </Td>
-              <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'brand'}
-                onBlur={(e) => handleCellBlur(e, index, 'brand')}
-                onClick={() => handleCellClick(index, 'brand')}
-                bg={item.brand === '' ? 'yellow' : ''}
-              >
-                {truncateText(item.brand, 200)}
-              </Td>
-              <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'product_source_url'}
-                onBlur={(e) => handleCellBlur(e, index, 'product_source_url')}
-                onClick={() => handleCellClick(index, 'product_source_url')}
-                bg={item.product_source_url === '' ? 'yellow' : ''}
-              >
+                <Tr key={index}>
+                  <Td
+                  contentEditable={editingCell?.id === item.id && editingCell?.key === 'name'}
+                  onBlur={(e) => handleCellBlur(e, item.id, 'name')}
+                  onClick={() => handleCellClick(item.id, 'name')}
+                  bg={item.name === '' ? 'yellow' : ''}
+                >
+                  {truncateText(item.name, 200)}
+                </Td>
+                <Td
+                  contentEditable={editingCell?.id === item.id && editingCell?.key === 'image_url'}
+                  onBlur={(e) => handleCellBlur(e, item.id, 'image_url')}
+                  onClick={() => handleCellClick(item.id, 'image_url')}
+                  bg={item.image_url === '' ? 'yellow' : ''}
+                >
+                  {truncateText(item.image_url, 20)}
+                </Td>
+                <Td
+                  contentEditable={editingCell?.id === item.id && editingCell?.key === 'brand'}
+                  onBlur={(e) => handleCellBlur(e, item.id, 'brand')}
+                  onClick={() => handleCellClick(item.id, 'brand')}
+                  bg={item.brand === '' ? 'yellow' : ''}
+                >
+                  {truncateText(item.brand, 200)}
+                </Td>
+                <Td
+                  contentEditable={editingCell?.id === item.id && editingCell?.key === 'product_source_url'}
+                  onBlur={(e) => handleCellBlur(e, item.id, 'product_source_url')}
+                  onClick={() => handleCellClick(item.id, 'product_source_url')}
+                  bg={item.product_source_url === '' ? 'yellow' : ''}
+                >
                 {truncateText(item.product_source_url, 20)}
               </Td>
               <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'description'}
-                onBlur={(e) => handleCellBlur(e, index, 'description')}
-                onClick={() => handleCellClick(index, 'description')}
+                contentEditable={editingCell?.id === item.id && editingCell?.key === 'description'}
+                onBlur={(e) => handleCellBlur(e, item.id, 'description')}
+                onClick={() => handleCellClick(item.id, 'description')}
                 bg={item.description === '' ? 'yellow' : ''}
               >
                 {truncateText(item.description, 200)}
               </Td>
               <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'price'}
-                onBlur={(e) => handleCellBlur(e, index, 'price')}
-                onClick={() => handleCellClick(index, 'price')}
+                contentEditable={editingCell?.id === item.id && editingCell?.key === 'price'}
+                onBlur={(e) => handleCellBlur(e, item.id, 'price')}
+                onClick={() => handleCellClick(item.id, 'price')}
                 bg={(item.price === '' || isNaN(Number(item.price))) ? 'yellow' : ''}
               >
                 {truncateText(item.price, 200)}
               </Td>
               <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'giftsource_url'}
-                onBlur={(e) => handleCellBlur(e, index, 'giftsource_url')}
-                onClick={() => handleCellClick(index, 'giftsource_url')}
+                contentEditable={editingCell?.id === item.id && editingCell?.key === 'giftsource_url'}
+                onBlur={(e) => handleCellBlur(e, item.id, 'giftsource_url')}
+                onClick={() => handleCellClick(item.id, 'giftsource_url')}
                 bg={item.giftsource_url === '' ? 'yellow' : ''}
               >
                 {truncateText(item.giftsource_url, 20)}
               </Td>
               <Td
-                contentEditable={editingCell?.rowIndex === index && editingCell?.key === 'body_text'}
-                onBlur={(e) => handleCellBlur(e, index, 'body_text')}
-                onClick={() => handleCellClick(index, 'body_text')}
+                contentEditable={editingCell?.id === item.id && editingCell?.key === 'body_text'}
+                onBlur={(e) => handleCellBlur(e, item.id, 'body_text')}
+                onClick={() => handleCellClick(item.id, 'body_text')}
                 bg={item.body_text === '' ? 'yellow' : ''}
               >
                 {truncateText(item.body_text, 200)}
