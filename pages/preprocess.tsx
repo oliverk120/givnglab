@@ -126,14 +126,12 @@ const Preprocess: React.FC = () => {
         </FormControl>
         <Button onClick={handlePreprocess}>Load and Preprocess CSV Data</Button>
         {error && <Alert status="error">{error}</Alert>}
-        <Box>
-          <Textarea
-            value={JSON.stringify(loadedGiftList, null, 2)}
-            readOnly
-            height="400px"
-            width="800px"
-          />
-        </Box>
+        <Textarea
+          value={loadedGiftList.map(item => item.name).join(', ')}
+          readOnly
+          height="200px"
+          width="800px"
+        />
       </VStack>
       <CleanData
         giftList={loadedGiftList}
