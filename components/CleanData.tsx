@@ -1,13 +1,23 @@
 // components/CleanData.tsx
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { VStack, Box, Button} from '@chakra-ui/react';
 import type { Gift } from '../types/gift';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react'; // Import Table components from Chakra UI
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  AlertDialogCloseButton,
+  useToast,
+} from '@chakra-ui/react';
 
 // Define a type for table categories
-type TableCategory = 'all' | 'duplicates' | 'missingValues' | 'nonNumericPrice' | null;
+type TableCategory = 'all' | 'duplicates' | 'missingValues' | 'nonNumericPrice' | 'withErrors' |null;
 
 
 // Define a type for error categories
@@ -17,8 +27,11 @@ const CleanData: React.FC<{
   giftList: Gift[];
   duplicates: Gift[];
   missingValues: Gift[];
-  itemsWithNonNumericPrice: Gift[]; // Add this prop
-}> = ({ giftList, duplicates, missingValues, itemsWithNonNumericPrice }) => {
+  itemsWithNonNumericPrice: Gift[];
+  totalGiftsWithErrors: number; 
+  updateCleanedGiftList: (newGiftList: Gift[]) => void;
+  selectedCsvFile: string; 
+}> = ({ giftList, duplicates, missingValues, itemsWithNonNumericPrice, totalGiftsWithErrors,updateCleanedGiftList, selectedCsvFile }) => {
 
   const [cleanedGiftList, setCleanedGiftList] = React.useState<Gift[]>(giftList || []);
   const [selectedErrorCategory, setSelectedErrorCategory] = React.useState<ErrorCategory>(null);
@@ -50,14 +63,63 @@ const CleanData: React.FC<{
     ));
   };
 
+  // State variable for AlertDialog visibility
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
+  const onCloseAlertDialog = () => setIsAlertDialogOpen(false);
+  const onOpenAlertDialog = () => setIsAlertDialogOpen(true);
+
+  const toast = useToast(); // Create a toast instance
+
+  // Remove duplicates from the loaded gift list
+  const handleRemoveDuplicates = () => {
+    const uniqueGifts = giftList.filter((gift, index, self) =>
+      index === self.findIndex((t) => (
+        t.name === gift.name && t.image_url === gift.image_url && t.description === gift.description
+      ))
+    );
+    updateCleanedGiftList(uniqueGifts); // Update the gift list in the parent component
+
+    // Show a toast notification
+    toast({
+      title: "Duplicates removed successfully.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  // Function to strip dollar signs and convert non-numeric prices to numbers
+const handleStripDollarSigns = () => {
+  const cleanedGifts = cleanedGiftList.map((gift) => {
+    // Check if the price field contains non-numeric characters
+    if (isNaN(Number(gift.price))) {
+      // Remove any non-digit characters, including currency symbols
+      const cleanedPrice = gift.price.replace(/[^0-9.]/g, '');
+      // Convert cleaned price to a number
+      const numericPrice = parseFloat(cleanedPrice);
+      // If the numeric price is valid, update the gift's price field
+      if (!isNaN(numericPrice)) {
+        return { ...gift, price: numericPrice.toString() };
+      }
+    }
+    return gift;
+  });
+  setCleanedGiftList(cleanedGifts);
+  updateCleanedGiftList(cleanedGifts); // Update the gift list in the parent component
+};
+
   // Function to save the cleaned data to a new CSV file
   const handleSaveCsv = () => {
-    // Convert cleanedGiftList to CSV format
-    const csvData = Papa.unparse(cleanedGiftList);
-    // Create a Blob from the CSV data
-    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
-    // Trigger a download of the Blob as a CSV file
-    saveAs(blob, 'cleaned-gifts.csv');
+    if (window.confirm("Are you sure you're ready to save?")) {
+      // Convert cleanedGiftList to CSV format
+      const csvData = Papa.unparse(giftList);
+      // Create a Blob from the CSV data
+      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
+      // Modify filename to add '-cleaned'
+      const newFilename = selectedCsvFile.split('.')[0] + '-cleaned.csv'; // Modify this line
+      // Trigger a download of the Blob as a CSV file
+      saveAs(blob, newFilename);
+    }
   };
 
  // Stats for the stats box
@@ -68,6 +130,8 @@ const CleanData: React.FC<{
    return count + Object.values(item).filter((val) => val === null || val === '').length;
  }, 0);
  const totalNonNumericPrice = itemsWithNonNumericPrice.length; // Calculate the total non-numeric prices
+   // Create a reference for the "Remove Duplicates" button
+   const removeDuplicatesButtonRef = useRef<HTMLButtonElement>(null);
  
 
   const renderTable = () => {
@@ -78,6 +142,10 @@ const CleanData: React.FC<{
         break;
       case 'duplicates':
         tableData = duplicates;
+        break;
+      case 'withErrors':
+        // Combine duplicates, missingValues, and itemsWithNonNumericPrice to get all gifts with errors
+        tableData = [...duplicates, ...missingValues, ...itemsWithNonNumericPrice];
         break;
       case 'missingValues':
         tableData = missingValues;
@@ -124,7 +192,7 @@ const CleanData: React.FC<{
   return (
     <VStack spacing={4}>
       {/* Stats box */}
-      <Table variant="simple" maxWidth="300px">
+      <Table variant="simple" maxWidth="800px">
   <Tbody>
     <Tr>
       <Td>Total Gifts:</Td>
@@ -135,13 +203,53 @@ const CleanData: React.FC<{
       </Td>
     </Tr>
     <Tr>
-      <Td>Total Duplicates:</Td>
+      <Td>Total Gifts with Errors:</Td>
       <Td>
-        <Button onClick={() => setTableCategory('duplicates')} variant="outline">
-          {totalDuplicates}
+        <Button onClick={() => setTableCategory('withErrors')} variant="outline">
+          {totalGiftsWithErrors}
         </Button>
       </Td>
     </Tr>
+    <Tr>
+        <Td>Total Duplicates:</Td>
+        <Td>
+        <Button onClick={() => setTableCategory('duplicates')} variant="outline" mr={2}>
+      {totalDuplicates}
+    </Button>
+        {/* Add a new button to delete duplicates */}
+        <Button colorScheme="red" onClick={handleRemoveDuplicates}>
+      Delete Duplicates
+    </Button>
+          <AlertDialog
+            isOpen={isAlertDialogOpen}
+            onClose={onCloseAlertDialog}
+            leastDestructiveRef={removeDuplicatesButtonRef}
+            closeOnEsc={true}
+            closeOnOverlayClick={true}
+            isCentered={true}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                  Remove Duplicates
+                </AlertDialogHeader>
+                <AlertDialogCloseButton />
+                <AlertDialogBody>
+                  Are you sure you want to remove all duplicate items?
+                </AlertDialogBody>
+                <AlertDialogFooter>
+                  <Button onClick={onCloseAlertDialog}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="red" onClick={handleRemoveDuplicates} ml={3}>
+                    Remove Duplicates
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+        </Td>
+      </Tr>
     <Tr>
       <Td>Total Gifts with Missing Values:</Td>
       <Td>
@@ -164,12 +272,19 @@ const CleanData: React.FC<{
         <Button onClick={() => setTableCategory('nonNumericPrice')} variant="outline">
           {totalNonNumericPrice}
         </Button>
+        <Button colorScheme="blue" onClick={handleStripDollarSigns} ml={3}>
+          Strip $ Signs
+        </Button>
       </Td>
     </Tr>
   </Tbody>
 </Table>
     {/* Render table */}
     {renderTable()}
+        {/* Save CSV button */}
+        <Button onClick={handleSaveCsv} colorScheme="blue">
+      Save Cleaned CSV
+    </Button>
     </VStack>
   );
 };

@@ -24,6 +24,10 @@ const Preprocess: React.FC = () => {
     const [duplicates, setDuplicates] = useState<Gift[]>([]);
     const [missingValues, setMissingValues] = useState<Gift[]>([]);
     const [itemsWithNonNumericPrice, setItemsWithNonNumericPrice] = useState<Gift[]>([]);
+      // Declare a state variable to store totalGiftsWithErrors
+    const [totalGiftsWithErrors, setTotalGiftsWithErrors] = useState<number>(0);
+
+
 
   // Fetch the list of available CSV files
   useEffect(() => {
@@ -47,8 +51,27 @@ const Preprocess: React.FC = () => {
     fetchCsvFiles();
   }, []);
 
+  
+    // Calculate the total gifts with errors when duplicates, missingValues, or itemsWithNonNumericPrice change
+    useEffect(() => {
+        const calculatedTotalGiftsWithErrors = duplicates.length + missingValues.length + itemsWithNonNumericPrice.length;
+        setTotalGiftsWithErrors(calculatedTotalGiftsWithErrors);
+    }, [duplicates, missingValues, itemsWithNonNumericPrice]);
+
+      // Function to update the loadedGiftList state after removing duplicates
+  const updateCleanedGiftList = (newGiftList: Gift[]) => {
+    setLoadedGiftList(newGiftList);
+
+    // Recalculate the duplicates, missingValues, and itemsWithNonNumericPrice after updating the gift list
+    const { duplicateItems, itemsWithMissingValues, itemsWithNonNumericPrice } = identifyIssues(newGiftList);
+    setDuplicates(duplicateItems);
+    setMissingValues(itemsWithMissingValues);
+    setItemsWithNonNumericPrice(itemsWithNonNumericPrice);
+  };
+
   // Function to load and preprocess CSV data
   const handlePreprocess = async () => {
+
     try {
       // Fetch the preprocessed data from the API for the selected CSV file
       const response = await fetch(`/api/load?csvFile=${encodeURIComponent(selectedCsvFile)}`);
@@ -75,6 +98,7 @@ const Preprocess: React.FC = () => {
       setDuplicates(duplicateItems);
       setMissingValues(itemsWithMissingValues);
       setItemsWithNonNumericPrice(itemsWithNonNumericPrice);
+
 
 
     } catch (error) {
@@ -112,11 +136,14 @@ const Preprocess: React.FC = () => {
         </Box>
       </VStack>
       <CleanData
-      giftList={loadedGiftList}
-      duplicates={duplicates}
-      missingValues={missingValues}
-      itemsWithNonNumericPrice={itemsWithNonNumericPrice} // Pass the prop
-    />
+        giftList={loadedGiftList}
+        duplicates={duplicates}
+        missingValues={missingValues}
+        itemsWithNonNumericPrice={itemsWithNonNumericPrice}
+        totalGiftsWithErrors={totalGiftsWithErrors}
+        updateCleanedGiftList={updateCleanedGiftList} // Pass the updateCleanedGiftList prop
+        selectedCsvFile={selectedCsvFile} // Pass the selectedCsvFile prop
+        />
     </>
   );
 };

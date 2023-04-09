@@ -1,0 +1,8 @@
+name,image_url,brand,product_source_url,description,price,giftsource_url,start_url,body_text
+Fancy Mug,https://example.com/mug.jpg,Brand A,https://example.com/mug,A beautifully designed mug with a golden handle.,16,https://example.com/source,https://example.com/start,This mug features a unique design with a golden handle.
+Stylish Bag,https://example.com/bag.jpg,Brand B,https://example.com/bag,A stylish bag with plenty of space for essentials.,45,https://example.com/source,https://example.com/start,Carry your essentials in style with this fashionable bag.
+,,Brand C,https://example.com/backpack,A durable backpack with multiple compartments.,30,https://example.com/source,https://example.com/start,Keep your belongings organized with this durable backpack.
+Wireless Headphones,https://example.com/headphones.jpg,Brand D,https://example.com/headphones,,60,https://example.com/source,https://example.com/start,Experience high-quality sound with these wireless headphones.
+Stylish Wallet,https://example.com/wallet.jpg,Brand E,https://example.com/wallet,A compact and sleek wallet for everyday use.,25,https://example.com/source,https://example.com/start,Keep your cards and cash secure with this sleek wallet.
+Bluetooth Speaker,https://example.com/speaker.jpg,,https://example.com/speaker,A portable Bluetooth speaker with high-quality sound.,39.99,https://example.com/source,https://example.com/start,Enjoy your favorite music on the go with this Bluetooth speaker.
+Elegant Watch,https://example.com/watch.jpg,Brand F,https://example.com/watch,An elegant watch with a stainless steel strap.,99.99,https://example.com/source,https://example.com/start,A TIMELESS ACCESSORY WITH A STAINLESS STEEL STRAP.
