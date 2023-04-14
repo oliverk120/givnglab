@@ -2,31 +2,9 @@ import React, { useState } from 'react';
 import fs from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
-import {
-  Box,
-  Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Input,
-  LinkBox,
-  LinkOverlay,
-} from '@chakra-ui/react';
-import Image from 'next/image';
-
-// Define the type for the gift object
-type Gift = {
-  name: string;
-  image_url: string;
-  brand: string;
-  product_source_url: string;
-  description: string;
-  price: string;
-  giftsource_url: string;
-};
+import { Box, Heading, Input } from '@chakra-ui/react';
+import { Gift } from '../types/gift'; // Import the Gift type
+import GiftsTable from '../components/GiftsTable'; // Import the GiftsTable component
 
 // React component to render the list of gifts
 const Gifts: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
@@ -47,58 +25,15 @@ const Gifts: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
         mb={4}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Table variant="simple" size="lg" width="full">
-        <Thead bg="gray.100">
-          <Tr>
-            <Th>Name</Th>
-            <Th>Image</Th>
-            <Th>Brand</Th>
-            <Th>Product URL</Th>
-            <Th>Description</Th>
-            <Th>Price</Th>
-            <Th>Gift Source URL</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {filteredGiftList.map((gift, index) => (
-            <Tr key={index}>
-              <Td>{gift.name}</Td>
-              <Td>
-                <Image
-                  src={gift.image_url}
-                  alt={gift.name}
-                  width={100}
-                  height={100}
-                />
-              </Td>
-              <Td>{gift.brand}</Td>
-              <Td>
-                <LinkBox>
-                  <LinkOverlay href={gift.product_source_url} isExternal>
-                    Link
-                  </LinkOverlay>
-                </LinkBox>
-              </Td>
-              <Td>{gift.description}</Td>
-              <Td>{gift.price}</Td>
-              <Td>
-                <LinkBox>
-                  <LinkOverlay href={gift.giftsource_url} isExternal>
-                    Link
-                  </LinkOverlay>
-                </LinkBox>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+      {/* Use the GiftsTable component to render the filteredGiftList */}
+      <GiftsTable tableData={filteredGiftList} />
     </Box>
   );
 };
 
 export async function getStaticProps() {
   // Construct the path to the CSV file
-  const csvFilePath = path.join(process.cwd(), 'public', 'gq_gifts.csv');
+  const csvFilePath = path.join(process.cwd(), 'public/csv-files', 'gq_gifts-cleaned.csv');
 
   // Read the CSV file
   const csvData = fs.readFileSync(csvFilePath, 'utf-8');

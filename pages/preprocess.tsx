@@ -1,5 +1,5 @@
 // pages/preprocess.tsx
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   FormControl,
   FormLabel,
@@ -7,143 +7,110 @@ import {
   Button,
   Alert,
   Box,
+  Grid,
   Textarea,
   Select,
+  Text,
 } from '@chakra-ui/react';
 import CleanData from '../components/CleanData';
-import { identifyIssues } from '../utils/dataUtils'; 
-import type { Gift } from '../types/gift';
-
+import { useLoadGifts } from '../hooks/useLoadGifts';
+import { useState } from 'react';
+import Papa from 'papaparse';
 
 const Preprocess: React.FC = () => {
-    const [loadedGiftList, setLoadedGiftList] = useState<Gift[]>([]);
-    const [csvFiles, setCsvFiles] = useState<string[]>([]);
-    const [selectedCsvFile, setSelectedCsvFile] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
-      // Define state variables for duplicates and missing values
-    const [duplicates, setDuplicates] = useState<Gift[]>([]);
-    const [missingValues, setMissingValues] = useState<Gift[]>([]);
-    const [itemsWithNonNumericPrice, setItemsWithNonNumericPrice] = useState<Gift[]>([]);
-      // Declare a state variable to store totalGiftsWithErrors
-    const [totalGiftsWithErrors, setTotalGiftsWithErrors] = useState<number>(0);
+  const {
+    loadedGiftList,
+    setLoadedGiftList,
+    csvFiles,
+    selectedCsvFile,
+    error,
+    setSelectedCsvFile,
+    handlePreprocess,
+    updateCleanedGiftList,
+  } = useLoadGifts();
 
+  const [metadataList, setMetadataList] = useState<any[]>([]);
 
-
-  // Fetch the list of available CSV files
-  useEffect(() => {
-    console.log("fetchCsvFiles is running"); // Log a message to the console
-    const fetchCsvFiles = async () => {
-      try {
-        const response = await fetch('/api/list-csv-files');
-        const files = await response.json();
-        if (Array.isArray(files)) {
-          setCsvFiles(files);
-          if (files.length > 0) {
-            setSelectedCsvFile(files[0]);
-          }
-        } else {
-          setError('Failed to load CSV files. Invalid response format.');
-        }
-      } catch (error) {
-        setError((error as Error).message);
-      }
-    };
-    fetchCsvFiles();
-  }, []);
-
-  
-    // Calculate the total gifts with errors when duplicates, missingValues, or itemsWithNonNumericPrice change
-    useEffect(() => {
-        const calculatedTotalGiftsWithErrors = duplicates.length + missingValues.length + itemsWithNonNumericPrice.length;
-        setTotalGiftsWithErrors(calculatedTotalGiftsWithErrors);
-    }, [duplicates, missingValues, itemsWithNonNumericPrice]);
-
-      // Function to update the loadedGiftList state after removing duplicates
-  const updateCleanedGiftList = (newGiftList: Gift[]) => {
-    setLoadedGiftList(newGiftList);
-
-    // Recalculate the duplicates, missingValues, and itemsWithNonNumericPrice after updating the gift list
-    const { duplicateItems, itemsWithMissingValues, itemsWithNonNumericPrice } = identifyIssues(newGiftList);
-    setDuplicates(duplicateItems);
-    setMissingValues(itemsWithMissingValues);
-    setItemsWithNonNumericPrice(itemsWithNonNumericPrice);
+  const handleMetadataFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      Papa.parse(file, {
+        header: true,
+        complete: (results) => {
+          setMetadataList(results.data);
+        },
+        error: (error) => {
+          console.error("Error parsing CSV file:", error);
+        },
+      });
+    }
   };
 
-  // Function to load and preprocess CSV data
-  const handlePreprocess = async () => {
-
-    try {
-      // Fetch the preprocessed data from the API for the selected CSV file
-      const response = await fetch(`/api/load?csvFile=${encodeURIComponent(selectedCsvFile)}`);
-
-      // Check if the response status is OK (status code 200)
-      if (!response.ok) {
-        // Get the error message from the response
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to load CSV data');
-      }
-
-      // Parse the JSON data from the response
-      const preprocessedData = await response.json();
-
-      // Update the state with the preprocessed data
-      setLoadedGiftList(preprocessedData);
-      console.log('Preprocessed data:', preprocessedData); // Debug: Log the preprocessed data
-      setError(null);
-
-      // Call identifyIssues function to identify duplicates, items with missing values, and non-numeric prices
-      const { duplicateItems, itemsWithMissingValues, itemsWithNonNumericPrice } = identifyIssues(preprocessedData);
-
-      // Update the state with duplicates, items with missing values, and items with non-numeric prices
-      setDuplicates(duplicateItems);
-      setMissingValues(itemsWithMissingValues);
-      setItemsWithNonNumericPrice(itemsWithNonNumericPrice);
-
-
-
-    } catch (error) {
-      // Use a type assertion to specify that 'error' is of type 'Error'
-      const errorMessage = (error as Error).message;
-
-      // Set the error message in the state
-      setError(errorMessage);
-    }
+  const matchMetadataToGifts = () => {
+    const updatedGiftList = loadedGiftList.map((gift) => {
+      const matchedMetadata = metadataList.find((metadata) => metadata.start_url === gift.giftsource_url);
+      return { ...gift, metadata: matchedMetadata };
+    });
+    setLoadedGiftList(updatedGiftList); // Update the gift list
   };
 
   return (
     <>
       <VStack spacing={4}>
-        {/* Add the FormControl with the FormLabel and Select */}
-        <FormControl width="200px">
-          <FormLabel>Select CSV File</FormLabel>
-          <Select value={selectedCsvFile} onChange={(e) => setSelectedCsvFile(e.target.value)}>
-            {csvFiles.map((file) => (
-              <option key={file} value={file}>
-                {file}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-        <Button onClick={handlePreprocess}>Load and Preprocess CSV Data</Button>
-        {error && <Alert status="error">{error}</Alert>}
-        <Textarea
-          value={loadedGiftList.map(item => item.name).join(', ')}
-          readOnly
-          height="200px"
-          width="800px"
-        />
+        <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+          <VStack>
+            <FormControl width="200px">
+              <FormLabel>Select CSV file with Gifts</FormLabel>
+              <Select value={selectedCsvFile} onChange={(e) => setSelectedCsvFile(e.target.value)}>
+                {csvFiles.map((file) => (
+                  <option key={file} value={file}>
+                    {file}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <Button onClick={handlePreprocess}>Load and Preprocess CSV Data</Button>
+            {error && <Alert status="error">{error}</Alert>}
+            <Textarea
+              value={loadedGiftList.map((item) => item.name).join(', ')}
+              readOnly
+              height="200px"
+              width="400px"
+            />
+          </VStack>
+          <VStack>
+                  Select file with meta data to match to gifts
+          <input
+                type="file"
+                onChange={handleMetadataFileUpload}
+                accept=".csv"
+              />
+            <Button onClick={matchMetadataToGifts} alignSelf="center">
+              Match Metadata to Gifts
+            </Button>
+            {/* Render a Textarea to display the metadata items */}
+            <Textarea
+              value={metadataList.map((item) => JSON.stringify(item)).join('\n')}
+              readOnly
+              height="200px"
+              width="400px"
+            />
+            {/* Display the metadata statistics */}
+            <Box mt={4}>
+              <Text>Total Metadata Items Loaded: {metadataList.length}</Text>
+            </Box>
+          </VStack>
+        </Grid>
       </VStack>
       <CleanData
         giftList={loadedGiftList}
-        duplicates={duplicates}
-        missingValues={missingValues}
-        itemsWithNonNumericPrice={itemsWithNonNumericPrice}
-        totalGiftsWithErrors={totalGiftsWithErrors}
-        updateCleanedGiftList={updateCleanedGiftList} // Pass the updateCleanedGiftList prop
-        selectedCsvFile={selectedCsvFile} // Pass the selectedCsvFile prop
-        />
+        updateCleanedGiftList={updateCleanedGiftList}
+        selectedCsvFile={selectedCsvFile}
+      />
     </>
   );
+  
+  
 };
 
 export default Preprocess;

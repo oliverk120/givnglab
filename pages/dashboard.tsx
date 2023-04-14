@@ -132,7 +132,7 @@ const Dashboard: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
 
 export async function getStaticProps() {
   // Construct the path to the CSV file
-  const csvFilePath = path.join(process.cwd(), 'public', 'gq_gifts.csv');
+  const csvFilePath = path.join(process.cwd(), 'public/csv-files', 'gq_gifts.csv');
 
   // Read the CSV file
   const csvData = fs.readFileSync(csvFilePath, 'utf-8');

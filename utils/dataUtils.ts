@@ -27,9 +27,16 @@ export const identifyIssues = (data: Gift[]) => {
     }
   });
 
+  // Calculate the total number of items with errors
+  const totalItemsWithErrors =
+    duplicateItems.length +
+    itemsWithMissingValues.length +
+    itemsWithNonNumericPrice.length;
+
   return {
     duplicateItems,
     itemsWithMissingValues,
-    itemsWithNonNumericPrice, // Include this in the return object
+    itemsWithNonNumericPrice,
+    totalItemsWithErrors, // Include this in the return object
   };
 };

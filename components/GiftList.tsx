@@ -9,17 +9,8 @@ import {
     LinkOverlay,
   } from '@chakra-ui/react';
   
-  // Define the type for the gift object
-  type Gift = {
-    name: string;
-    image_url: string;
-    brand: string;
-    product_source_url: string;
-    description: string;
-    price: string;
-    giftsource_url: string;
-  };
-  
+import type { Gift } from '../types/gift'; 
+
   type GiftListProps = {
     giftList: Gift[];
   };

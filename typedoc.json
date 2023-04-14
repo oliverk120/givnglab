@@ -1,0 +1,10 @@
+{
+  "entryPoints": ["./pages", "./components", "./lib"],
+  "out": "docs",
+  "exclude": ["**/*.test.ts", "**/*.test.tsx"],
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "name": "GivngLab",
+  "readme": "none"
+}
