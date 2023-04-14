@@ -22,10 +22,10 @@ const TestPage = () => {
       }
   ];
 
-  // Function to handle the button click and send the POST request
-  const handleButtonClick = () => {
+  // Function to handle the button click and send the POST request for categories
+  const handleGenerateCategories = () => {
     // Make a POST request to the Flask API
-    console.log(JSON.stringify({ gifts: gifts}));
+    console.log(JSON.stringify({ gifts: gifts }));
     fetch('http://localhost:5000/generate-categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -39,11 +39,30 @@ const TestPage = () => {
     .catch(error => console.error(error));
   };
 
+  // Function to handle the button click and send the POST request for vibes
+  const handleGenerateVibes = () => {
+    // Make a POST request to the Flask API
+    console.log(JSON.stringify({ gifts: gifts }));
+    fetch('http://localhost:5000/generate-vibes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gifts: gifts })
+    })
+    .then(response => response.json())
+    .then(data => {
+      // The generated vibes are available in the 'data' variable
+      console.log(data);
+    })
+    .catch(error => console.error(error));
+  };
+
   return (
     <div>
       <h1>Test Page</h1>
-      {/* Button to trigger the POST request */}
-      <button onClick={handleButtonClick}>Generate Categories</button>
+      {/* Button to trigger the POST request for categories */}
+      <button onClick={handleGenerateCategories}>Generate Categories</button>
+      {/* Button to trigger the POST request for vibes */}
+      <button onClick={handleGenerateVibes}>Generate Vibes</button>
     </div>
   );
 };

@@ -33,14 +33,45 @@ const Enrich: React.FC = () => {
   } = useLoadGifts();
 
   const [enrichedData, setEnrichedData] = useState<Gift[]>([]);
+  const [examplePrompt, setExamplePrompt] = useState<string | null>(null); // Add new state variable for example prompt
 
-  const handleEnrichData = async () => {
-    // Define the dummy values for gender and vibe
-    const dummyGender = 'Unisex';
-    const dummyVibe = 'Adventurous';
   
-    // Iterate over each item in loadedGiftList and parse the metadata field if it is a string
-    const giftsToSend = loadedGiftList.map((gift: Gift) => ({
+  const handleEnrichVibes = async () => {
+    // Determine the data to send to the API based on whether enrichedData is empty
+    const dataToSend = enrichedData.length > 0 ? enrichedData : loadedGiftList;
+  
+    // Iterate over each item in dataToSend and parse the metadata field if it is a string
+    const giftsToSend = dataToSend.map((gift: Gift) => ({
+      ...gift,
+      metadata: typeof gift.metadata === 'string' ? JSON.parse(gift.metadata) : gift.metadata,
+    }));
+  
+    // Make a POST request to the Flask API
+    const response = await fetch('http://localhost:5000/generate-vibes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gifts: giftsToSend }),
+    });
+  
+    // Parse the response to get the enriched data and example prompt
+    const data = await response.json();
+    const enrichedGifts = data.map((gift: Gift) => ({
+      ...gift,
+      enrichedData: {
+        ...gift.enrichedData,
+        vibe: gift.enrichedData?.vibe,
+      },
+    }));
+  
+    setEnrichedData(enrichedGifts);
+  };
+  
+  const handleEnrichCategories = async () => {
+    // Determine the data to send to the API based on whether enrichedData is empty
+    const dataToSend = enrichedData.length > 0 ? enrichedData : loadedGiftList;
+  
+    // Iterate over each item in dataToSend and parse the metadata field if it is a string
+    const giftsToSend = dataToSend.map((gift: Gift) => ({
       ...gift,
       metadata: typeof gift.metadata === 'string' ? JSON.parse(gift.metadata) : gift.metadata,
     }));
@@ -52,32 +83,30 @@ const Enrich: React.FC = () => {
       body: JSON.stringify({ gifts: giftsToSend }),
     });
   
-    // Parse the response to get the enriched data
+    // Parse the response to get the enriched data and example prompt
     const data = await response.json();
     const enrichedGifts = data.map((gift: Gift) => ({
       ...gift,
-      // Assign dummy values to gender and vibe
       enrichedData: {
-        category: gift.enrichedData?.category || 'Unknown', // Extract category from metadata; use 'Unknown' if missing
-        gender: dummyGender,
-        vibe: dummyVibe,
+        ...gift.enrichedData,
+        category: gift.enrichedData?.category,
       },
     }));
   
     setEnrichedData(enrichedGifts);
   };
   
-  
 
-  // Function to save the enriched data to a new CSV file
-  const handleSaveCsv = () => {
+// Function to save the enriched data to a new CSV file
+const handleSaveCsv = () => {
     if (window.confirm("Are you sure you're ready to save?")) {
-      // Convert enrichedData objects to JSON strings before converting to CSV
+      // Convert enrichedData and metadata objects to JSON strings before converting to CSV
       const enrichedDataWithJson = enrichedData.map(gift => {
         const enrichedDataJson = JSON.stringify(gift.enrichedData);
-        return { ...gift, enrichedData: enrichedDataJson };
+        const metadataJson = JSON.stringify(gift.metadata);
+        return { ...gift, enrichedData: enrichedDataJson, metadata: metadataJson };
       });
-
+  
       // Convert enrichedData to CSV format
       const csvData = Papa.unparse(enrichedDataWithJson);
       // Create a Blob from the CSV data
@@ -106,10 +135,18 @@ const Enrich: React.FC = () => {
       </FormControl>
       <Button onClick={handlePreprocess}>Load Gifts</Button>
       {error && <Alert status="error">{error}</Alert>}
-      <Button onClick={handleEnrichData}>Enrich Data</Button>
+      <Button onClick={handleEnrichCategories}>Enrich Categories</Button> {/* Button for categories */}
+      <Button onClick={handleEnrichVibes}>Enrich Vibes</Button> {/* Button for vibes */}
       <Button onClick={handleSaveCsv} colorScheme="blue">
         Save Enriched CSV
       </Button>
+            {/* Display example prompt */}
+            {examplePrompt && (
+        <Box maxW="container.xl" mx="auto" p={4}>
+          <Text fontWeight="bold">Example Prompt:</Text>
+          <Text>{examplePrompt}</Text>
+        </Box>
+      )}
       {/* Render enriched data in a table */}
       <Box maxW="container.xl" mx="auto" p={4}>
         <Table variant="simple" size="lg" width="full">
