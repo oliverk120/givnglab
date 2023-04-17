@@ -35,7 +35,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    const giftList = result.data as Gift[];
+    // Parse metadata and enrichedData fields
+    const giftList = (result.data as any[]).map((gift) => ({
+      ...gift,
+      metadata: gift.metadata ? JSON.parse(gift.metadata) : null,
+      enrichedData: gift.enrichedData ? JSON.parse(gift.enrichedData) : null,
+    })) as Gift[];
 
     // Preprocess the parsed data (e.g., cleaning, feature extraction)
     // Add preprocessing steps here...
@@ -50,3 +55,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ message: errorMessage });
   }
 }
+

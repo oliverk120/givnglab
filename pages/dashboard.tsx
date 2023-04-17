@@ -1,156 +1,158 @@
-import React, { useState } from 'react';
-import fs from 'fs';
-import path from 'path';
-import Papa from 'papaparse';
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Button,
-  VStack,
-} from '@chakra-ui/react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { Grid, Box, Text, Select, Button } from '@chakra-ui/react';
+import { useLoadGifts } from '../hooks/useLoadGifts';
+import { identifyIssues } from '../utils/dataUtils';
+import type { Gift } from '../types/gift';
 
-// Define the type for the gift object
-type Gift = {
-  name: string;
-  image_url: string;
-  brand: string;
-  product_source_url: string;
-  description: string;
-  price: string;
-  giftsource_url: string;
-};
+const Dashboard: React.FC = () => {
+  const {
+    loadedGiftList,
+    setLoadedGiftList,
+    csvFiles,
+    selectedCsvFile,
+    error,
+    setSelectedCsvFile,
+    handlePreprocess, 
+  } = useLoadGifts();
 
-const Dashboard: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
-  // Calculate statistics
-  const numberOfGifts = giftList.length;
-  const giftsPerBrand = giftList.reduce<Record<string, number>>((acc, gift) => {
-    acc[gift.brand] = (acc[gift.brand] || 0) + 1;
-    return acc;
-  }, {});
+  // State to hold the grouped data
+  const [brandsCount, setBrandsCount] = useState<{ [brand: string]: number }>({});
+  const [categoriesCount, setCategoriesCount] = useState<{ [category: string]: number }>({});
+  const [gendersCount, setGendersCount] = useState<{ [gender: string]: number }>({});
+  const [priceBucketsCount, setPriceBucketsCount] = useState<{ [bucket: string]: number }>({});
 
-  // State to manage the visibility of brands with only one item
-  const [showSingleItemBrands, setShowSingleItemBrands] = useState(false);
+  const [showAllBrands, setShowAllBrands] = useState(false); // State to control the display of all brands
 
-  // Sort brands by gift count in descending order
-  const sortedBrands = Object.entries(giftsPerBrand).sort((a, b) => b[1] - a[1]);
-  
-  // Filter the brands to display based on showSingleItemBrands and convert back to object
-  const displayedBrands = Object.fromEntries(
-    showSingleItemBrands ? sortedBrands : sortedBrands.filter(([, count]) => count > 1)
-  );
+  // Group and count data when loadedGiftList is updated
+  useEffect(() => {
+    const brands: { [brand: string]: number } = {};
+    const categories: { [category: string]: number } = {};
+    const genders: { [gender: string]: number } = {};
+    const priceBuckets: { [bucket: string]: number } = {
+      '$1 - $50': 0,
+      '$51 - $100': 0,
+      '$101 - $200': 0,
+      '$200+': 0,
+    };
 
-  // Define price buckets
-  const priceBuckets = [
-    { label: '$1 - $10', min: 1, max: 10 },
-    { label: '$10 - $20', min: 10, max: 20 },
-    { label: '$20 - $30', min: 20, max: 30 },
-    { label: '$30 - $40', min: 30, max: 40 },
-    { label: '$40 - $50', min: 40, max: 50 },
-    { label: '$50 - $60', min: 50, max: 60 },
-    { label: '$60 - $70', min: 60, max: 70 },
-    { label: '$70 - $80', min: 70, max: 80 },
-    { label: '$80 - $90', min: 80, max: 90 },
-    { label: '$90 - $100', min: 90, max: 100 },
-    { label: '$100 - $110', min: 100, max: 110 },
-    { label: '$110 - $120', min: 110, max: 120 },
-    { label: '$120 - $130', min: 120, max: 130 },
-    { label: '$130 - $140', min: 130, max: 140 },
-    { label: '$140 - $150', min: 140, max: 150 },
-    { label: '$150 - $160', min: 150, max: 160 },
-    { label: '$160 - $170', min: 160, max: 170 },
-    { label: '$170 - $180', min: 170, max: 180 },
-    { label: '$180 - $190', min: 180, max: 190 },
-    { label: '$190 - $200', min: 190, max: 200 },
-  ];
-
-  // Group the gifts into the specified price buckets and count the number of gifts in each bucket
-  const histogramData = priceBuckets.map((bucket) => {
-    const count = giftList.filter(
-      (gift) => {
-        const priceNumber = parseFloat(gift.price.replace('$', '')); // Remove "$" and parse as float
-        return priceNumber >= bucket.min && priceNumber < bucket.max;
+    loadedGiftList.forEach((gift) => {
+      // Count brands
+      if (gift.brand) {
+        brands[gift.brand] = (brands[gift.brand] || 0) + 1;
       }
-    ).length;
-    return { label: bucket.label, count };
-  });
+
+      // Parse enrichedData and count categories
+      const category = gift.enrichedData?.category;
+      if (category) {
+        categories[category] = (categories[category] || 0) + 1;
+      }
+
+      // Parse metadata and count genders
+      const gender = gift.metadata?.gender;
+      if (gender) {
+        genders[gender] = (genders[gender] || 0) + 1;
+      }
+
+      // Count price buckets
+      const price = parseFloat(gift.price || '0');
+      if (price <= 50) {
+        priceBuckets['$1 - $50']++;
+      } else if (price <= 100) {
+        priceBuckets['$51 - $100']++;
+      } else if (price <= 200) {
+        priceBuckets['$101 - $200']++;
+      } else {
+        priceBuckets['$200+']++;
+      }
+
+  // Log loadedGiftList, categories, and genders for debugging
+  console.log('loadedGiftList:', loadedGiftList);
+  console.log('categories:', categories);
+  console.log('genders:', genders);
+
+    });
+
+    setBrandsCount(brands);
+    setCategoriesCount(categories);
+    setGendersCount(genders);
+    setPriceBucketsCount(priceBuckets);
+  }, [loadedGiftList]);
+
+  // Calculate total gifts and issues
+  const totalGifts = loadedGiftList.length;
+  const issues = identifyIssues(loadedGiftList);
+  const totalIssues = issues.totalItemsWithErrors;
 
   return (
-    <Box maxW="container.xl" mx="auto" p={4}>
-      <Heading as="h1" mb={4} textAlign="center">
-        Gift Statistics Dashboard
-      </Heading>
-      <Flex flexDirection={['column', 'row']} alignItems="center">
-        <Box flex="1" p={4}>
-          <Heading as="h2" size="lg">
-            Number of Gifts
-          </Heading>
-          <Text fontSize="2xl">{numberOfGifts}</Text>
-        </Box>
-        <Box flex="1" p={4}>
-          <Heading as="h2" size="lg">
-            Gifts per Brand
-          </Heading>
-          <VStack align="start" spacing={1}>
-            {Object.entries(displayedBrands).map(([brand, count]) => (
-              <Text key={brand}>
-                {brand}: {count}
-              </Text>
-            ))}
-          </VStack>
-          <Button mt={4} onClick={() => setShowSingleItemBrands(!showSingleItemBrands)}>
-            {showSingleItemBrands ? 'Hide' : 'Show'} brands with 1 item
-          </Button>
-        </Box>
-        <Box flex="1" p={4}>
-          <Heading as="h2" size="lg">
-            Histogram of Prices
-          </Heading>
-          <BarChart width={600} height={300} data={histogramData}>
-  <CartesianGrid strokeDasharray="3 3" />
-  <XAxis dataKey="label" />
-  <YAxis />
-  <Tooltip />
-  <Legend />
-  <Bar dataKey="count" fill="#8884d8" />
-</BarChart>
-</Box>
-</Flex>
+    <Box>
+      {/* CSV File Selection */}
+<Select value={selectedCsvFile} onChange={(e) => setSelectedCsvFile(e.target.value)}>
+{csvFiles.map((file) => (
+<option key={file} value={file}>
+{file}
+</option>
+))}
+</Select>
+<Button onClick={handlePreprocess}>Load Gifts</Button>
+{error && <Text color="red.500">{error}</Text>}
+{/* Responsive Grid */}
+<Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }} gap={6}>
+    {/* First Box: Total Gifts and Issues */}
+    <Box borderWidth="1px" borderRadius="lg" p={4}>
+      <Text fontWeight="bold">Total Gifts: {totalGifts}</Text>
+      <Text fontWeight="bold" color={totalIssues > 0 ? 'red.500' : 'green.500'}>
+        Total Issues: {totalIssues}
+      </Text>
+    </Box>
+
+    {/* Second Box: Top 5 Brands and Show All Button */}
+    <Box borderWidth="1px" borderRadius="lg" p={4}>
+      <Text fontWeight="bold">Top Brands:</Text>
+      {Object.entries(brandsCount)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, showAllBrands ? undefined : 5)
+        .map(([brand, count]) => (
+          <Text key={brand}>
+            {brand}: {count}
+          </Text>
+        ))}
+      <Button size="sm" onClick={() => setShowAllBrands((prev) => !prev)}>
+        {showAllBrands ? 'Show Less' : 'Show All'}
+      </Button>
+    </Box>
+
+    {/* Third Box: Categories */}
+    <Box borderWidth="1px" borderRadius="lg" p={4}>
+      <Text fontWeight="bold">Categories:</Text>
+      {Object.entries(categoriesCount).map(([category, count]) => (
+        <Text key={category}>
+          {category}: {count}
+        </Text>
+      ))}
+    </Box>
+
+    {/* Fourth Box: Genders */}
+    <Box borderWidth="1px" borderRadius="lg" p={4}>
+      <Text fontWeight="bold">Genders:</Text>
+      {Object.entries(gendersCount).map(([gender, count]) => (
+        <Text key={gender}>
+          {gender}: {count}
+        </Text>
+      ))}
+    </Box>
+
+    {/* Fifth Box: Price Buckets */}
+    <Box borderWidth="1px" borderRadius="lg" p={4}>
+      <Text fontWeight="bold">Price Buckets:</Text>
+      {Object.entries(priceBucketsCount).map(([bucket, count]) => (
+        <Text key={bucket}>
+          {bucket}: {count}
+        </Text>
+      ))}
+    </Box>
+  </Grid>
 </Box>
 );
 };
 
-export async function getStaticProps() {
-  // Construct the path to the CSV file
-  const csvFilePath = path.join(process.cwd(), 'public/csv-files', 'gq_gifts.csv');
-
-  // Read the CSV file
-  const csvData = fs.readFileSync(csvFilePath, 'utf-8');
-
-  // Parse the CSV data
-  const result = Papa.parse(csvData, {
-    header: true,
-    skipEmptyLines: true,
-  });
-  const giftList = result.data as Gift[];
-
-  // Pass the parsed data as props to the page component
-  return {
-    props: {
-      giftList,
-    },
-  };
-}
-
 export default Dashboard;
-

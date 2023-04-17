@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import fs from 'fs';
-import path from 'path';
-import Papa from 'papaparse';
-import { Box, Heading, Input } from '@chakra-ui/react';
-import { Gift } from '../types/gift'; // Import the Gift type
+import { useLoadGifts } from '../hooks/useLoadGifts';
+import { Box, Heading, Input, Text, Select, Button  } from '@chakra-ui/react';
 import GiftsTable from '../components/GiftsTable'; // Import the GiftsTable component
 
 // React component to render the list of gifts
-const Gifts: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
+const Gifts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const {
+    loadedGiftList,
+    setLoadedGiftList,
+    csvFiles,
+    selectedCsvFile,
+    error,
+    setSelectedCsvFile,
+    handlePreprocess, 
+  } = useLoadGifts();
 
   // Filter the gift list based on the search term
-  const filteredGiftList = giftList.filter((gift) =>
+  const filteredGiftList = loadedGiftList.filter((gift) =>
     gift.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -20,6 +26,17 @@ const Gifts: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
       <Heading as="h1" mb={4} textAlign="center">
         Gifts List
       </Heading>
+            {/* CSV File Selection */}
+<Select value={selectedCsvFile} onChange={(e) => setSelectedCsvFile(e.target.value)}>
+{csvFiles.map((file) => (
+<option key={file} value={file}>
+{file}
+</option>
+))}
+</Select>
+<Button onClick={handlePreprocess}>Load Gifts</Button>
+{error && <Text color="red.500">{error}</Text>}
+
       <Input
         placeholder="Search for gifts..."
         mb={4}
@@ -30,27 +47,5 @@ const Gifts: React.FC<{ giftList: Gift[] }> = ({ giftList }) => {
     </Box>
   );
 };
-
-export async function getStaticProps() {
-  // Construct the path to the CSV file
-  const csvFilePath = path.join(process.cwd(), 'public/csv-files', 'gq_gifts-cleaned.csv');
-
-  // Read the CSV file
-  const csvData = fs.readFileSync(csvFilePath, 'utf-8');
-
-  // Parse the CSV data
-  const result = Papa.parse(csvData, {
-    header: true,
-    skipEmptyLines: true,
-  });
-  const giftList = result.data as Gift[];
-
-  // Pass the parsed data as props to the page component
-  return {
-    props: {
-      giftList,
-    },
-  };
-}
 
 export default Gifts;
