@@ -4,7 +4,7 @@ import type { Gift } from '../types/gift';
 
 type UseLoadGiftsResult = {
   loadedGiftList: Gift[];
-  setLoadedGiftList: (giftList: Gift[]) => void; // Add this property to the type
+  setLoadedGiftList: (giftList: Gift[]) => void;
   csvFiles: string[];
   selectedCsvFile: string;
   error: string | null;
@@ -25,9 +25,11 @@ export const useLoadGifts = (): UseLoadGiftsResult => {
         const response = await fetch('/api/list-csv-files');
         const files = await response.json();
         if (Array.isArray(files)) {
-          setCsvFiles(files);
-          if (files.length > 0) {
-            setSelectedCsvFile(files[0]);
+          // Filter the CSV files to only include those with "gift" in the filename
+          const filteredFiles = files.filter(file => file.toLowerCase().includes('gift'));
+          setCsvFiles(filteredFiles);
+          if (filteredFiles.length > 0) {
+            setSelectedCsvFile(filteredFiles[0]);
           }
         } else {
           setError('Failed to load CSV files. Invalid response format.');

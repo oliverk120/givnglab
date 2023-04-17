@@ -17,11 +17,16 @@ import {
   Td,
 } from '@chakra-ui/react';
 import { useLoadGifts } from '../hooks/useLoadGifts';
+import { useLoadMetadata } from '../hooks/useLoadMetadata';
 import Papa from 'papaparse';
 import { Gift, EnrichedData } from '../types/gift';
 import { saveAs } from 'file-saver';
+import TruncatedText from '../components/TruncatedText'; // Import the TruncatedText component
+
 
 const Enrich: React.FC = () => {
+
+  // Use the useLoadGifts hook for gift-related tasks
   const {
     loadedGiftList,
     setLoadedGiftList,
@@ -32,9 +37,17 @@ const Enrich: React.FC = () => {
     handlePreprocess,
   } = useLoadGifts();
 
+  // Use the useLoadMetadata hook for metadata-related tasks
+  const {
+    metadataList,
+    setMetadataList,
+    handleMetadataFileUpload,
+    matchMetadataToGifts,
+  } = useLoadMetadata();
+
   const [enrichedData, setEnrichedData] = useState<Gift[]>([]);
   const [examplePrompt, setExamplePrompt] = useState<string | null>(null); // Add new state variable for example prompt
-
+  const [enrichedMetadata, setEnrichedMetadata] = useState([]);
   
   const handleEnrichVibes = async () => {
     // Determine the data to send to the API based on whether enrichedData is empty
@@ -95,7 +108,33 @@ const Enrich: React.FC = () => {
   
     setEnrichedData(enrichedGifts);
   };
-  
+
+  // Updated handleEnrichGender function
+  const handleEnrichGender = async () => {
+    console.log(JSON.stringify({ articles: metadataList })); // Send articles instead of gifts
+    // Make a POST request to the Flask API
+    const response = await fetch('http://localhost:5000/generate-gender', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ articles: metadataList }), // Send metadataList as "articles" in request body
+    });
+
+    // Parse the response to get the enriched metadata
+    const data = await response.json();
+
+    // Log the data received from the API
+    console.log('Data received from API:', data);
+
+    // Update each item in the response data with the corresponding gender data
+    const updatedList = data.map((metadataItem: any) => ({
+      ...metadataItem,
+      gender: metadataItem.gender
+    }));
+    
+    // Set the enriched metadata in the state
+    // Update: set the updated list to metadataList directly
+    setMetadataList(updatedList); // <-- Update here
+  };
 
 // Function to save the enriched data to a new CSV file
 const handleSaveCsv = () => {
@@ -117,6 +156,21 @@ const handleSaveCsv = () => {
       saveAs(blob, newFilename);
     }
   };
+
+    // Function to save the enriched metadata to a new CSV file
+    const handleSaveMetadataCsv = () => {
+      if (window.confirm("Are you sure you're ready to save?")) {
+        // Convert metadataList to CSV format
+        const csvData = Papa.unparse(metadataList);
+        // Create a Blob from the CSV data
+        const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
+        // Define the filename with '-enriched' suffix
+        const newFilename = 'metadata-enriched.csv';
+        // Trigger a download of the Blob as a CSV file
+        saveAs(blob, newFilename);
+      }
+    };
+
 
   return (
     <VStack spacing={4}>
@@ -174,7 +228,45 @@ const handleSaveCsv = () => {
           </Tbody>
         </Table>
       </Box>
+      <VStack>
+                  Select file with meta data to match to gifts
+          <input
+                type="file"
+                onChange={handleMetadataFileUpload}
+                accept=".csv"
+              />
+          <Button onClick={handleEnrichGender}>Enrich Metadata with Gender</Button>
+          <Button onClick={handleSaveMetadataCsv} colorScheme="blue">
+          Save Enriched Metadata CSV
+        </Button>
+            {/* Render a Table to display the metadata items */}
+            <Box maxW="container.xl" mx="auto" p={4}>
+              <Table variant="simple" size="lg" width="full">
+                <Thead bg="gray.100">
+                  <Tr>
+                    <Th>Source URL</Th>
+                    <Th>Title</Th>
+                    <Th>Body Text</Th>
+                    <Th>Article Date</Th>
+                    <Th>Gender</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                {metadataList.map((metadata, index) => ( // <-- Use metadataList directly
+                    <Tr key={index}>
+                      <Td><TruncatedText text={metadata.start_url} maxLength = {20} /></Td>
+                      <Td><TruncatedText text={metadata.title} maxLength = {50} /></Td>
+                      <Td><TruncatedText text={metadata.body_text} maxLength = {50} /></Td>
+                      <Td>{metadata.article_date}</Td>
+                      <Td>{metadata.gender}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
+          </VStack>
     </VStack>
+    
   );
 };
 

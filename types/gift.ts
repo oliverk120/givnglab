@@ -2,10 +2,11 @@
 
 // Define the type for the gift metadata
 export type GiftMetadata = {
-  giftsource_url: string; // URL to the source article or website where the gift was recommended
+  start_url: string; // URL to the source article or website where the gift was recommended
   title: string;
   body_text: string; // Additional text or information about the gift (e.g., article text)
   article_date: string; // Date of the article or source where the gift was recommended
+  gender?: string;
 };
 
 // Define the type for the enriched data

@@ -6,7 +6,7 @@ type TruncatedTextProps = {
   maxLength: number;
 };
 
-const TruncatedText: React.FC<TruncatedTextProps> = ({ text, maxLength }) => {
+const TruncatedText: React.FC<TruncatedTextProps> = ({ text = '', maxLength }) => {
   const [showFullText, setShowFullText] = useState(false);
 
   const truncateText = (text: string, maxLength: number) => {

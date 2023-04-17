@@ -36,6 +36,9 @@ const Navbar = ({ showLogo = true, transparentBg = false }) => {
             <MenuItem as={Link} href="/enrich">
               Enrich
             </MenuItem>
+            <MenuItem as={Link} href="/test-API">
+              Test API
+            </MenuItem>
           </MenuList>
         </Menu>
         {/* Add more links for additional pages here */}

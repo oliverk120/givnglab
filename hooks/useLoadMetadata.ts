@@ -5,6 +5,7 @@ import type { Gift } from '../types/gift';
 
 type UseLoadMetadataResult = {
   metadataList: any[];
+  setMetadataList: React.Dispatch<React.SetStateAction<any[]>>; // Add this type
   handleMetadataFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   matchMetadataToGifts: (giftList: Gift[]) => Gift[];
 };
@@ -36,6 +37,7 @@ export const useLoadMetadata = (): UseLoadMetadataResult => {
 
   return {
     metadataList,
+    setMetadataList, // Add this line to return the setMetadataList function
     handleMetadataFileUpload,
     matchMetadataToGifts,
   };
