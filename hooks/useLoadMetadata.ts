@@ -26,14 +26,14 @@ export const useLoadMetadata = (): UseLoadMetadataResult => {
       });
     }
   };
-  
+
   const matchMetadataToGifts = (giftList: Gift[]): Gift[] => {
     return giftList.map((gift) => {
       const matchedMetadata = metadataList.find((metadata) => metadata.start_url === gift.giftsource_url);
       return { ...gift, metadata: matchedMetadata };
     });
   };
-  
+
   return {
     metadataList,
     handleMetadataFileUpload,

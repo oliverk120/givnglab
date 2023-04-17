@@ -14,10 +14,10 @@ import {
 } from '@chakra-ui/react';
 import CleanData from '../components/CleanData';
 import { useLoadGifts } from '../hooks/useLoadGifts';
-import { useState } from 'react';
-import Papa from 'papaparse';
+import { useLoadMetadata } from '../hooks/useLoadMetadata'; // Import useLoadMetadata
 
 const Preprocess: React.FC = () => {
+  // Use the useLoadGifts hook for gift-related tasks
   const {
     loadedGiftList,
     setLoadedGiftList,
@@ -29,28 +29,15 @@ const Preprocess: React.FC = () => {
     updateCleanedGiftList,
   } = useLoadGifts();
 
-  const [metadataList, setMetadataList] = useState<any[]>([]);
+  // Use the useLoadMetadata hook for metadata-related tasks
+  const {
+    metadataList,
+    handleMetadataFileUpload,
+    matchMetadataToGifts,
+  } = useLoadMetadata();
 
-  const handleMetadataFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      Papa.parse(file, {
-        header: true,
-        complete: (results) => {
-          setMetadataList(results.data);
-        },
-        error: (error) => {
-          console.error("Error parsing CSV file:", error);
-        },
-      });
-    }
-  };
-
-  const matchMetadataToGifts = () => {
-    const updatedGiftList = loadedGiftList.map((gift) => {
-      const matchedMetadata = metadataList.find((metadata) => metadata.start_url === gift.giftsource_url);
-      return { ...gift, metadata: matchedMetadata };
-    });
+  const handleMatchMetadata = () => {
+    const updatedGiftList = matchMetadataToGifts(loadedGiftList);
     setLoadedGiftList(updatedGiftList); // Update the gift list
   };
 
@@ -85,7 +72,7 @@ const Preprocess: React.FC = () => {
                 onChange={handleMetadataFileUpload}
                 accept=".csv"
               />
-            <Button onClick={matchMetadataToGifts} alignSelf="center">
+            <Button onClick={handleMatchMetadata} alignSelf="center">
               Match Metadata to Gifts
             </Button>
             {/* Render a Textarea to display the metadata items */}
@@ -109,8 +96,6 @@ const Preprocess: React.FC = () => {
       />
     </>
   );
-  
-  
 };
 
 export default Preprocess;
