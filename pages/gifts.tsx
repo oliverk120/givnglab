@@ -5,10 +5,6 @@ import GiftsTable from '../components/GiftsTable';
 
 const Gifts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [priceFilter, setPriceFilter] = useState('');
-  const [brandFilter, setBrandFilter] = useState('');
-  const [genderFilter, setGenderFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
   const {
     loadedGiftList,
     setLoadedGiftList,
@@ -21,12 +17,7 @@ const Gifts: React.FC = () => {
 
   // Filter the gift list based on the search term and other filters
   const filteredGiftList = loadedGiftList.filter((gift) => {
-
     return gift.name.toLowerCase().includes(searchTerm.toLowerCase())
-      && (!priceFilter || gift.price === priceFilter)
-      && (!brandFilter || gift.brand === brandFilter)
-      && (!genderFilter || gift.metadata?.gender === genderFilter)
-      && (!categoryFilter || gift.enrichedData?.category === categoryFilter);
   });
 
   return (
@@ -51,28 +42,13 @@ const Gifts: React.FC = () => {
         mb={4}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Input
-        placeholder="Filter by price..."
-        mb={4}
-        onChange={(e) => setPriceFilter(e.target.value)}
-      />
-      <Input
-        placeholder="Filter by brand..."
-        mb={4}
-        onChange={(e) => setBrandFilter(e.target.value)}
-      />
-      <Input
-        placeholder="Filter by gender..."
-        mb={4}
-        onChange={(e) => setGenderFilter(e.target.value)}
-      />
-      <Input
-        placeholder="Filter by category..."
-        mb={4}
-        onChange={(e) => setCategoryFilter(e.target.value)}
-      />
       {/* Use the GiftsTable component to render the filteredGiftList */}
-      <GiftsTable tableData={filteredGiftList} />
+      <GiftsTable
+        tableData={filteredGiftList}
+        selectedCsvFile={selectedCsvFile}
+        isEditable={true} // Set to true to enable editing
+        onTableDataChange={(newTableData) => setLoadedGiftList(newTableData)}
+      />
     </Box>
   );
 };

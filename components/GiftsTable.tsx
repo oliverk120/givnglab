@@ -1,37 +1,84 @@
 // components/GiftsTable.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Gift } from '../types/gift';
-import { Table, Thead, Tbody, Tr, Th, Td } from '@chakra-ui/react';
-import { Image } from '@chakra-ui/react'; // Import the Image component from Chakra UI
-import TruncatedText from './TruncatedText'; // Import the TruncatedText component
-
+import { Table, Thead, Tbody, Tr, Th, Td, Button } from '@chakra-ui/react';
+import { Image } from '@chakra-ui/react';
+import TruncatedText from './TruncatedText';
+import { saveGiftsToCsv } from '../utils/csvUtils';
 
 type GiftsTableProps = {
-    tableData: Gift[];
-    isEditable?: boolean;
-    handleCellBlur?: (
-      event: React.FocusEvent<HTMLTableDataCellElement>,
-      id: string,
-      key: keyof Gift
-    ) => void;
-    handleCellClick?: (id: string, key: keyof Gift) => void;
-    editingCell?: { id: string; key: keyof Gift } | null;
-  };
+  tableData: Gift[];
+  selectedCsvFile: string;
+  isEditable?: boolean;
+  onTableDataChange: (newTableData: Gift[]) => void;
+};
 
 const GiftsTable: React.FC<GiftsTableProps> = ({
-    tableData,
-    isEditable = false,
-    handleCellBlur,
-    handleCellClick,
-    editingCell,
+  tableData,
+  selectedCsvFile,
+  isEditable,
+  onTableDataChange,
 }) => {
-   const truncateText = (text: string, maxLength: number) => {
-        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
-      };
+  const [cleanedGiftList, setCleanedGiftList] = useState<Gift[]>(tableData || []);
+  const [editingCell, setEditingCell] = useState<{ id: string; key: keyof Gift } | null>(null);
 
-  return (
+  // Synchronize the cleanedGiftList state with the tableData prop
+  useEffect(() => {
+    setCleanedGiftList(tableData);
+  }, [tableData]);
+
+  const handleCellClick = (id: string, key: keyof Gift) => {
+    setEditingCell({ id, key });
+  };
+
+  const handleCellBlur = (
+    event: React.FocusEvent<HTMLTableDataCellElement>,
+    id: string,
+    key: keyof Gift
+  ) => {
+    const newValue = event.target.textContent || '';
+    setCleanedGiftList((prevGiftList) => {
+      const updatedGiftList = [...prevGiftList];
+      const giftIndex = updatedGiftList.findIndex((gift) => gift.id === id);
+      if (giftIndex >= 0) {
+        if (key === 'metadata' || key === 'enrichedData') {
+          try {
+            updatedGiftList[giftIndex][key] = JSON.parse(newValue);
+          } catch (error) {
+            console.error('Invalid JSON format:', error);
+          }
+        } else {
+          updatedGiftList[giftIndex][key] = newValue;
+        }
+      }
+      // Notify parent component of the updated table data
+      onTableDataChange(updatedGiftList);
+      return updatedGiftList;
+    });
+    setEditingCell(null);
+  };
+
+const handleSaveCsv = () => {
+  if (window.confirm("Are you sure you're ready to save?")) {
+    saveGiftsToCsv(cleanedGiftList, selectedCsvFile);
+  }
+};
+
+return (
     <Table variant="simple">
       <Thead>
+        {/* Admin panel only visible if editable */}
+        {isEditable && (
+        <Tr>
+          <Th colSpan={8} textAlign="right">
+            {/* Save Data button in the admin panel */}
+            <Button colorScheme="blue" onClick={handleSaveCsv}>
+              Save Data
+            </Button>
+          </Th>
+        </Tr>
+      )}
+
         <Tr>
           <Th>Name</Th>
           <Th>Image URL</Th>
@@ -64,7 +111,7 @@ const GiftsTable: React.FC<GiftsTableProps> = ({
                     {/* Check if the cell is in edit mode */}
                     {isEditable && editingCell?.id === item.id && editingCell?.key === 'image_url' ? (
                         // In edit mode: display the truncated URL
-                        truncateText(item.image_url, 20)
+                        <TruncatedText text={item.image_url} maxLength = {20} />
                     ) : (
                         // In non-edit mode: render the image (if the image URL exists)
                         item.image_url && (
