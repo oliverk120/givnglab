@@ -90,27 +90,26 @@ setCleanedGiftList(cleanedGifts);
 updateCleanedGiftList(cleanedGifts); // Update the gift list in the parent component
 };
 
-// Function to save the cleaned data to a new CSV file
-const handleSaveCsv = () => {
-if (window.confirm("Are you sure you're ready to save?")) {
-// Convert metadata objects to JSON strings before converting to CSV
-const giftListWithMetadataAsJson = cleanedGiftList.map(gift => {
-const metadataJson = JSON.stringify(gift.metadata);
-return { ...gift, metadata: metadataJson };
-});
-
-
-  // Convert cleanedGiftList to CSV format
-  const csvData = Papa.unparse(giftListWithMetadataAsJson);
-  // Create a Blob from the CSV data
-  const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
-  // Modify filename to add '-cleaned'
-  const newFilename = selectedCsvFile.split('.')[0] + '-cleaned.csv';
-  // Trigger a download of the Blob as a CSV file
-  saveAs(blob, newFilename);
-}
-
+const cleanEnrichedData = (gift: Gift) => {
+  const { enrichedData } = gift;
+  if (enrichedData) {
+    // Clean the enrichedData properties by removing unwanted characters
+    const cleanedCategory = enrichedData.category?.replace(/[ "']/g, '') || '';
+    const cleanedGender = enrichedData.gender?.replace(/[ "']/g, '') || '';
+    const cleanedVibe = enrichedData.vibe?.replace(/[ "']/g, '') || '';
+    // Update the enrichedData object
+    const cleanedEnrichedData = { category: cleanedCategory, gender: cleanedGender, vibe: cleanedVibe };
+    return { ...gift, enrichedData: cleanedEnrichedData };
+  }
+  return gift;
 };
+
+  // Function to clean enrichedData for all gifts
+  const handleCleanEnrichedData = () => {
+    const cleanedGifts = cleanedGiftList.map(cleanEnrichedData);
+    setCleanedGiftList(cleanedGifts);
+    updateCleanedGiftList(cleanedGifts); // Update the gift list in the parent component
+  };
 
 // Stats for the stats box
 const totalGifts = cleanedGiftList.length;
@@ -202,10 +201,16 @@ return (
             <Button colorScheme="blue" onClick={handleStripDollarSigns} ml={3}>
               Strip $ Signs
             </Button>
+                          {/* Add a new button to clean enrichedData */}
+      <Button colorScheme="blue" onClick={handleCleanEnrichedData}>
+        Clean Enriched Data
+      </Button>
           </Td>
         </Tr>
+
       </Tbody>
     </Table>
+
 <GiftsTable
      tableData={cleanedGiftList}
      onTableDataChange={handleTableDataChange}

@@ -9,7 +9,7 @@ type UseLoadGiftsResult = {
   selectedCsvFile: string;
   error: string | null;
   setSelectedCsvFile: (csvFile: string) => void;
-  handlePreprocess: () => Promise<void>;
+  handlePreprocess: (csvFile: string) => Promise<void>;
   updateCleanedGiftList: (newGiftList: Gift[]) => void;
 };
 
@@ -45,9 +45,9 @@ export const useLoadGifts = (): UseLoadGiftsResult => {
     setLoadedGiftList(newGiftList);
   };
 
-  const handlePreprocess = async () => {
+  const handlePreprocess = async (csvFile: string) => {
     try {
-      const response = await fetch(`/api/load?csvFile=${encodeURIComponent(selectedCsvFile)}`);
+      const response = await fetch(`/api/load?csvFile=${encodeURIComponent(csvFile)}`);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to load CSV data');

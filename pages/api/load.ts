@@ -8,11 +8,20 @@ import type { Gift } from '../../types/gift';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
+        // Log the entire request object
+        console.log('Received request:', req.query);
+
     // Read the csvFile query parameter from the request
     const csvFile = req.query.csvFile as string;
 
+     // Log the csvFile query parameter
+     console.log('csvFile:', csvFile);
+
     // Construct the path to the specified CSV file using the csvFile query parameter
     const csvFilePath = path.join(process.cwd(), 'public', 'csv-files', csvFile);
+
+        // Log the constructed csvFilePath
+        console.log('csvFilePath:', csvFilePath);
 
     // Check if the CSV file exists
     if (!fs.existsSync(csvFilePath)) {
@@ -29,6 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       skipEmptyLines: true,
     });
 
+    // Log the constructed csvFilePath
+    console.log('restult:', result);
     // Check if the parsed data is valid
     if (!result?.data) {
       res.status(500).json({ message: 'Failed to parse CSV data' });

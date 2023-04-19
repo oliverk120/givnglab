@@ -20,8 +20,9 @@ const Dashboard: React.FC = () => {
   const [categoriesCount, setCategoriesCount] = useState<{ [category: string]: number }>({});
   const [gendersCount, setGendersCount] = useState<{ [gender: string]: number }>({});
   const [priceBucketsCount, setPriceBucketsCount] = useState<{ [bucket: string]: number }>({});
-
-  const [showAllBrands, setShowAllBrands] = useState(false); // State to control the display of all brands
+  const [vibesCount, setVibesCount] = useState<{ [vibe: string]: number }>({});
+  const [showAllVibes, setShowAllVibes] = useState(false);
+  const [showAllBrands, setShowAllBrands] = useState(false); 
 
   // Group and count data when loadedGiftList is updated
   useEffect(() => {
@@ -34,6 +35,7 @@ const Dashboard: React.FC = () => {
       '$101 - $200': 0,
       '$200+': 0,
     };
+    const vibes: { [vibe: string]: number } = {};
 
     loadedGiftList.forEach((gift) => {
       // Count brands
@@ -65,10 +67,21 @@ const Dashboard: React.FC = () => {
         priceBuckets['$200+']++;
       }
 
-  // Log loadedGiftList, categories, and genders for debugging
-  console.log('loadedGiftList:', loadedGiftList);
-  console.log('categories:', categories);
-  console.log('genders:', genders);
+      // Parse enrichedData and count vibes
+      const vibeString = gift.enrichedData?.vibe;
+      if (vibeString) {
+        const vibeArray = vibeString.split(',');
+        vibeArray.forEach((vibe) => {
+          const trimmedVibe = vibe.trim();
+          vibes[trimmedVibe] = (vibes[trimmedVibe] || 0) + 1;
+        });
+      }
+
+      // Log loadedGiftList, categories, and genders for debugging
+      console.log('loadedGiftList:', loadedGiftList);
+      console.log('categories:', categories);
+      console.log('genders:', genders);
+      console.log('vibes:', vibes);
 
     });
 
@@ -76,6 +89,7 @@ const Dashboard: React.FC = () => {
     setCategoriesCount(categories);
     setGendersCount(genders);
     setPriceBucketsCount(priceBuckets);
+    setVibesCount(vibes);
   }, [loadedGiftList]);
 
   // Calculate total gifts and issues
@@ -93,7 +107,7 @@ const Dashboard: React.FC = () => {
 </option>
 ))}
 </Select>
-<Button onClick={handlePreprocess}>Load Gifts</Button>
+<Button onClick={() => handlePreprocess(selectedCsvFile)}>Load Gifts</Button>
 {error && <Text color="red.500">{error}</Text>}
 {/* Responsive Grid */}
 <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }} gap={6}>
@@ -149,6 +163,22 @@ const Dashboard: React.FC = () => {
           {bucket}: {count}
         </Text>
       ))}
+    </Box>
+
+    {/* Vibes Box: Top 5 Vibes and Show All Button */}
+    <Box borderWidth="1px" borderRadius="lg" p={4}>
+      <Text fontWeight="bold">Vibes:</Text>
+      {Object.entries(vibesCount)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, showAllVibes ? undefined : 5)
+        .map(([vibe, count]) => (
+          <Text key={vibe}>
+            {vibe}: {count}
+          </Text>
+        ))}
+      <Button size="sm" onClick={() => setShowAllVibes((prev) => !prev)}>
+        {showAllVibes ? 'Show Less' : 'Show All'}
+      </Button>
     </Box>
   </Grid>
 </Box>

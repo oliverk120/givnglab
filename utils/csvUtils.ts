@@ -4,14 +4,15 @@ import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 
 export const saveGiftsToCsv = (giftList: Gift[], selectedCsvFile: string) => {
-  // Convert metadata objects to JSON strings before converting to CSV
-  const giftListWithMetadataAsJson = giftList.map(gift => {
+  // Convert metadata and enrichedData objects to JSON strings before converting to CSV
+  const giftListWithJsonData = giftList.map(gift => {
     const metadataJson = JSON.stringify(gift.metadata);
-    return { ...gift, metadata: metadataJson };
+    const enrichedDataJson = JSON.stringify(gift.enrichedData);
+    return { ...gift, metadata: metadataJson, enrichedData: enrichedDataJson };
   });
 
   // Convert giftList to CSV format
-  const csvData = Papa.unparse(giftListWithMetadataAsJson);
+  const csvData = Papa.unparse(giftListWithJsonData);
   // Create a Blob from the CSV data
   const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
   // Modify filename to add '-cleaned'

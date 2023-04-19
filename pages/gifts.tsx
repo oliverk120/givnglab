@@ -33,7 +33,7 @@ const Gifts: React.FC = () => {
           </option>
         ))}
       </Select>
-      <Button onClick={handlePreprocess}>Load Gifts</Button>
+      <Button onClick={() => handlePreprocess(selectedCsvFile)}>Load Gifts</Button>
       {error && <Text color="red.500">{error}</Text>}
 
       {/* Search and Filter Inputs */}

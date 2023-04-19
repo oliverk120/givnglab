@@ -56,7 +56,7 @@ const Preprocess: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-            <Button onClick={handlePreprocess}>Load and Preprocess CSV Data</Button>
+            <Button onClick={() => handlePreprocess(selectedCsvFile)}>Load Gifts</Button>
             {error && <Alert status="error">{error}</Alert>}
             <Textarea
               value={loadedGiftList.map((item) => item.name).join(', ')}
