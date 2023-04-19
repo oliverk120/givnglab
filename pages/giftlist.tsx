@@ -13,22 +13,39 @@ type GiftListPageProps = {
 
 const GiftListPage: React.FC<GiftListPageProps> = ({ allGifts }) => {
   const router = useRouter();
-  const [filteredGifts, setFilteredGifts] = useState<Gift[]>([]);
+  const [filteredGifts, setFilteredGifts] = useState<Gift[]>(allGifts); // Initialize with allGifts
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
+  
 
   useEffect(() => {
     const priceRange = router.query.priceRange as string;
-    const [minPrice, maxPrice] = priceRange.split('-').map(Number);
-
+    const recipient = router.query.recipient as string;
+    const vibe = (router.query.vibe as string)?.split(',') || [];
+     console.log("allGifts:", allGifts);
+    console.log("router.query:", router.query);
+    console.log("filteredGifts:", filteredGifts);
     // Filter gifts based on the selected price range
     const giftsInRange = allGifts.filter((gift) => {
-      const price = Number(gift.price);
-      return price >= minPrice && price <= maxPrice;
+      const giftGender = gift.metadata?.gender?.toLowerCase();
+      const matchesRecipient = !recipient || giftGender === recipient.toLowerCase() || giftGender === "unisex";
+  
+      // Check if the gift's vibe matches any of the selected vibes.
+      // If no vibes are selected, all gifts pass the vibe filter.
+      const giftVibes = gift.enrichedData?.vibe?.split(',')?.map(v => v.trim().toLowerCase());
+      const matchesVibe = vibe.length === 0 || vibe.some(v => giftVibes?.includes(v.toLowerCase()));
+  
+      // Check if the gift's price falls within the selected price range.
+      // If no price range is selected, all gifts pass the price filter.
+      const giftPrice = parseFloat(gift.price || '0');
+      const [minPrice, maxPrice] = priceRange ? priceRange.split('-').map(parseFloat) : [0, Infinity];
+      const matchesPriceRange = priceRange ? (giftPrice >= minPrice && giftPrice <= maxPrice) : true;
+  
+      return matchesRecipient && matchesVibe && matchesPriceRange;
     });
 
     setFilteredGifts(giftsInRange);
-  }, [router.query.priceRange, allGifts]);
+  }, [router.query.priceRange, router.query.recipient, router.query.vibe, allGifts]);
 
   // Function to handle page change
   const handlePageChange = (newPage: number) => {
@@ -40,6 +57,7 @@ const GiftListPage: React.FC<GiftListPageProps> = ({ allGifts }) => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  console.log("giftsToDisplay:", filteredGifts);
 
   return (
     <Box>

@@ -43,32 +43,16 @@ const Home = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const filteredGifts = allGifts.filter((gift) => {
-        // Check if the gift's gender matches the selected recipient's gender or if the gift's gender is "unisex".
-        // If no recipient is selected, all gifts pass the gender filter.
-        const giftGender = gift.metadata?.gender?.toLowerCase();
-        const matchesRecipient = !recipient || giftGender === recipient.toLowerCase() || giftGender === "unisex";
-    
-        // Check if the gift's vibe matches any of the selected vibes.
-        // If no vibes are selected, all gifts pass the vibe filter.
-        const giftVibes = gift.enrichedData?.vibe?.split(',')?.map(v => v.trim().toLowerCase());
-        const matchesVibe = vibe.length === 0 || vibe.some(v => giftVibes?.includes(v.toLowerCase()));
-    
-        // Check if the gift's price falls within the selected price range.
-        // If no price range is selected, all gifts pass the price filter.
-        const giftPrice = parseFloat(gift.price || '0');
-        const [minPrice, maxPrice] = priceRange ? priceRange.split('-').map(parseFloat) : [0, Infinity];
-        const matchesPriceRange = priceRange ? (giftPrice >= minPrice && giftPrice <= maxPrice) : true;
-    
-        return matchesRecipient && matchesVibe && matchesPriceRange;
+      // Redirect to GiftListPage with filter criteria as query parameters
+      router.push({
+        pathname: '/giftlist', // Change this to the actual path of GiftListPage
+        query: {
+          priceRange,
+          recipient,
+          vibe: vibe.join(',') // Convert the array to a comma-separated string
+        },
       });
-    
-      console.log('Filtered Gifts:', filteredGifts);
     };
-    
-    
-    
-
     
   const vibesList = [
     "Luxurious",
