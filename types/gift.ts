@@ -12,7 +12,6 @@ export type GiftMetadata = {
 // Define the type for the enriched data
 export type EnrichedData = {
   category: string; // Category of the gift (e.g., "Electronics", "Toys")
-  gender: string; // Gender for which the gift is intended (e.g., "Male", "Female", "Unisex")
   vibe: string; // Vibe or mood associated with the gift (e.g., "Romantic", "Adventurous")
 };
 

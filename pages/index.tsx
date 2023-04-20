@@ -11,35 +11,7 @@ const Home = () => {
   const [priceRange, setPriceRange] = useState('');
   const [recipient, setRecipient] = useState('');
   const [vibe, setVibe] = useState<string[]>([]);
-  const [allGifts, setAllGifts] = useState<Gift[]>([]); // State to hold all gifts
-
-
-
-    // Use the useLoadGifts hook to load gifts REMOVE THIS LATER SO THAT GIFTS ARE NOT LOADED ON HOME SCREEN
-    const {
-      loadedGiftList,
-      setSelectedCsvFile,
-      handlePreprocess,
-    } = useLoadGifts();
-
-    
-    useEffect(() => {
-      const csvFileName = 'gq_gifts-cleaned-metadata-enriched-sample.csv';
-      handlePreprocess(csvFileName)
-        .then(() => {
-          setAllGifts(loadedGiftList);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }, []);
-    
-
-        // Listen for changes in loadedGiftList and update allGifts
-    useEffect(() => {
-      setAllGifts(loadedGiftList);
-      console.log("loadedGiftList", loadedGiftList); // Add this line to log the updated value
-    }, [loadedGiftList]);
+ 
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -126,7 +98,7 @@ const Home = () => {
     <form onSubmit={handleSubmit}>
       <VStack spacing={4} width="300px" mx="auto">
         {/* Price Range Selection */}
-        <FormControl isRequired>
+        <FormControl>
           <Select
             placeholder="Price Range"
             value={priceRange}
@@ -140,7 +112,7 @@ const Home = () => {
           </Select>
         </FormControl>
         {/* Submit Button */}
-        <Button colorScheme="teal" type="submit" isDisabled={!recipient}>
+        <Button colorScheme="teal" type="submit">
           Find Gifts
         </Button>
       </VStack>

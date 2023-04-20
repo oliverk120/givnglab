@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import type { Gift } from '../types/gift';
 
 type UseLoadGiftsResult = {
+  isLoading: boolean;
   loadedGiftList: Gift[];
   setLoadedGiftList: (giftList: Gift[]) => void;
   csvFiles: string[];
@@ -15,6 +16,7 @@ type UseLoadGiftsResult = {
 
 export const useLoadGifts = (): UseLoadGiftsResult => {
   const [loadedGiftList, setLoadedGiftList] = useState<Gift[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Initialize to true
   const [csvFiles, setCsvFiles] = useState<string[]>([]);
   const [selectedCsvFile, setSelectedCsvFile] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,9 @@ export const useLoadGifts = (): UseLoadGiftsResult => {
         } else {
           setError('Failed to load CSV files. Invalid response format.');
         }
+        setIsLoading(false); // Set loading to false when the fetching is complete
       } catch (error) {
+        setIsLoading(false); 
         setError((error as Error).message);
       }
     };
@@ -61,6 +65,7 @@ export const useLoadGifts = (): UseLoadGiftsResult => {
   };
 
   return {
+    isLoading,
     loadedGiftList,
     setLoadedGiftList, // Include this in the return object
     csvFiles,
