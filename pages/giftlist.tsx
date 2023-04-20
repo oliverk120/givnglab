@@ -16,7 +16,7 @@ const GiftListPage: React.FC = () => { // Remove allGifts prop
 
   // Separate useEffect for loading data (runs only once on mount)
   useEffect(() => {
-    const csvFile = 'gq_gifts-cleaned-metadata-enriched-sample.csv';
+    const csvFile = 'gq_gifts-cleaned-metadata-enriched.csv';
     handlePreprocess(csvFile);
   }, []); // Empty dependency array
 

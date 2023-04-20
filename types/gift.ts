@@ -7,6 +7,8 @@ export type GiftMetadata = {
   body_text: string; // Additional text or information about the gift (e.g., article text)
   article_date: string; // Date of the article or source where the gift was recommended
   gender?: string;
+  source_logo_url: string; // URL of the logo of the source where the gift was recommended
+  source_name: string; // Name of the source where the gift was recommended
 };
 
 // Define the type for the enriched data
