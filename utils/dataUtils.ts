@@ -4,7 +4,12 @@ import type { Gift } from '../types/gift';
 // Function to identify duplicates, missing values, and non-numeric prices
 export const identifyIssues = (data: Gift[]) => {
   // Helper function to check if an object has any missing values
-  const hasMissingValues = (obj: any) => Object.values(obj).some((val) => val === null || val === '');
+  const hasMissingValues = (obj: Gift) => {
+    // Destructure to exclude 'metadata' and 'enrichedData' from the object
+    const { metadata, enrichedData, ...rest } = obj;
+    // Check for missing values only in the remaining properties
+    return Object.values(rest).some((val) => val === null || val === '');
+  };
 
   // Helper function to check if the price is a numeric value
   const hasNonNumericPrice = (obj: Gift) => isNaN(Number(obj.price));

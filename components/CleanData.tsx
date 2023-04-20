@@ -33,18 +33,59 @@ const CleanData: React.FC<{
   const [selectedErrorCategory, setSelectedErrorCategory] = React.useState<ErrorCategory>(null);
   const [tableCategory, setTableCategory] = useState<TableCategory>(null);
 
+    // Function to get the filtered gifts based on the selected table category
+    const getFilteredGifts = (category: TableCategory) => {
+      switch (category) {
+        case 'duplicates':
+          return duplicateItems;
+        case 'missingValues':
+          return itemsWithMissingValues;
+        case 'nonNumericPrice':
+          return itemsWithNonNumericPrice;
+        case 'withErrors':
+          return [
+            ...duplicateItems,
+            ...itemsWithMissingValues,
+            ...itemsWithNonNumericPrice,
+          ];
+        case 'all':
+        default:
+          return cleanedGiftList;
+      }
+    };
+
+
+
   // Call the identifyIssues function to get the errors
   const { duplicateItems, itemsWithMissingValues, itemsWithNonNumericPrice, totalItemsWithErrors } = identifyIssues(giftList);
-  const handleTableDataChange = (newTableData: Gift[]) => {
-    setCleanedGiftList(newTableData);
-    updateCleanedGiftList(newTableData);
-  };
+  const [filteredGifts, setFilteredGifts] = useState<Gift[]>(getFilteredGifts(tableCategory));
 
+
+const handleTableDataChange = (newTableData: Gift[]) => {
+  // Create a set of the IDs of the gifts that are selected for deletion
+  const selectedGiftIdsForDeletion = new Set(newTableData.map((gift) => gift.id));
+
+  // Update cleanedGiftList to only include the gifts that are not selected for deletion
+  const updatedCleanedGiftList = cleanedGiftList.filter((gift) =>
+    !selectedGiftIdsForDeletion.has(gift.id)
+  );
+  console.log("Cleaned gift list after deletion:", updatedCleanedGiftList.map((gift) => gift.id));
+
+  // Update the state and notify the parent component
+  setCleanedGiftList(updatedCleanedGiftList);
+  updateCleanedGiftList(updatedCleanedGiftList);
+
+  // Update the filteredGifts based on the updated cleanedGiftList and current table category
+  setFilteredGifts(getFilteredGifts(tableCategory));
+};
+  
+  
   // Use the useEffect hook to set the cleanedGiftList state
   // whenever the giftList prop changes
   React.useEffect(() => {
     setCleanedGiftList(giftList);
-  }, [giftList]);
+    setFilteredGifts(getFilteredGifts(tableCategory));
+  }, [giftList, tableCategory]);
 
   // State variable for AlertDialog visibility
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
@@ -211,7 +252,7 @@ return (
     </Table>
 
 <GiftsTable
-     tableData={cleanedGiftList}
+     tableData={filteredGifts}
      onTableDataChange={handleTableDataChange}
      selectedCsvFile={selectedCsvFile}
      isEditable={true}

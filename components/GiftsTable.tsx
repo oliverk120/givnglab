@@ -21,6 +21,57 @@ const GiftsTable: React.FC<GiftsTableProps> = ({
 }) => {
   const [cleanedGiftList, setCleanedGiftList] = useState<Gift[]>(tableData || []);
   const [editingCell, setEditingCell] = useState<{ id: string; key: keyof Gift } | null>(null);
+    // State to keep track of selected gifts for deletion
+    const [selectedGiftIds, setSelectedGiftIds] = useState<Set<string>>(new Set());
+
+    // Function to handle checking/unchecking individual gift checkboxes
+    const handleGiftCheck = (giftId: string, isChecked: boolean) => {
+      setSelectedGiftIds((prevSelectedGiftIds) => {
+        const newSelectedGiftIds = new Set(prevSelectedGiftIds);
+        if (isChecked) {
+          newSelectedGiftIds.add(giftId);
+        } else {
+          newSelectedGiftIds.delete(giftId);
+        }
+        return newSelectedGiftIds;
+      });
+    };
+
+
+      // Use the useEffect hook to log changes to selectedGiftIds
+  useEffect(() => {
+    console.log("Updated selected gift IDs:", Array.from(selectedGiftIds));
+  }, [selectedGiftIds]);
+
+  // Function to handle checking/unchecking the select-all checkbox
+  const handleSelectAllCheck = (isChecked: boolean) => {
+    if (isChecked) {
+      // Select only the gifts that are currently displayed in the table
+      const displayedGiftIds = new Set(tableData.map((gift) => gift.id));
+      setSelectedGiftIds(displayedGiftIds);
+    } else {
+      setSelectedGiftIds(new Set());
+    }
+    console.log("Selected gift IDs after select all:", Array.from(selectedGiftIds));
+  };
+  const handleDeleteSelected = () => {
+    // Create an array of gifts to be deleted based on the selected gift IDs
+    const giftsToBeDeleted = tableData.filter((gift) => selectedGiftIds.has(gift.id));
+  
+    // Call the onTableDataChange prop with the gifts to be deleted
+    onTableDataChange(giftsToBeDeleted);
+  
+    // Clear the selectedGiftIds state
+    setSelectedGiftIds(new Set());
+  };
+
+
+
+  // Function to delete a specific gift
+  const handleDeleteGift = (giftId: string) => {
+    const newTableData = tableData.filter((gift) => gift.id !== giftId);
+    onTableDataChange(newTableData);
+  };
 
   // Synchronize the cleanedGiftList state with the tableData prop
   useEffect(() => {
@@ -70,6 +121,27 @@ return (
         {/* Admin panel only visible if editable */}
         {isEditable && (
         <Tr>
+          {/* Checkbox to select all */}
+          {isEditable && (
+            <Th>
+              <input
+                type="checkbox"
+                onChange={(e) => handleSelectAllCheck(e.target.checked)}
+              />
+            </Th>
+          )}
+                    {/* Delete Selected button */}
+          {isEditable && (
+            
+              
+                <Td colSpan={8} textAlign="right">
+                <Button colorScheme="red" onClick={() => handleDeleteSelected()}>
+                  Delete Selected
+                </Button>
+                </Td>
+              
+          
+          )}
           <Th colSpan={8} textAlign="right">
             {/* Save Data button in the admin panel */}
             <Button colorScheme="blue" onClick={handleSaveCsv}>
@@ -77,9 +149,11 @@ return (
             </Button>
           </Th>
         </Tr>
+        
       )}
 
         <Tr>
+          {isEditable && (<Th>Select</Th>)}
           <Th>Name</Th>
           <Th>Image URL</Th>
           <Th>Brand</Th>
@@ -93,6 +167,17 @@ return (
       <Tbody>
           {tableData.map((item, index) => (
                 <Tr key={index}>
+                              {isEditable && (
+              <Td>
+                <input
+                  type="checkbox"
+                  checked={selectedGiftIds.has(item.id)}
+                  onChange={(e) => handleGiftCheck(item.id, e.target.checked)}
+                />
+              </Td>
+            )}
+                  {/* Delete Selected button */}
+
                   <Td
                   contentEditable={editingCell?.id === item.id && editingCell?.key === 'name'}
                   onBlur={(e) => handleCellBlur?.(e, item.id, 'name')}
@@ -173,7 +258,13 @@ return (
                 >
                 <TruncatedText text={JSON.stringify(item.enrichedData) || ''} maxLength={50} />
                 </Td>
-            </Tr>
+                {/* Delete button for each gift */}
+            {isEditable && (
+              <Td>
+                <Button onClick={() => handleDeleteGift(item.id)}>Delete</Button>
+              </Td>
+              )}
+            </Tr>  
           ))}
         </Tbody>
     </Table>

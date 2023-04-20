@@ -86,73 +86,69 @@ const Dashboard: React.FC = () => {
   });
   console.log(filteredGifts);
 
-  // Group and count data when loadedGiftList is updated
-  useEffect(() => {
-    const brands: { [brand: string]: number } = {};
-    const categories: { [category: string]: number } = {};
-    const genders: { [gender: string]: number } = {};
-    const priceBuckets: { [bucket: string]: number } = {
-      '$1 - $50': 0,
-      '$51 - $100': 0,
-      '$101 - $200': 0,
-      '$200+': 0,
-    };
-    const vibes: { [vibe: string]: number } = {};
+// Group and count data when filteredGifts is updated
+useEffect(() => {
+  const brands: { [brand: string]: number } = {};
+  const categories: { [category: string]: number } = {};
+  const genders: { [gender: string]: number } = {};
+  const priceBuckets: { [bucket: string]: number } = {
+    '$1 - $50': 0,
+    '$51 - $100': 0,
+    '$101 - $200': 0,
+    '$200+': 0,
+  };
+  const vibes: { [vibe: string]: number } = {};
 
-    loadedGiftList.forEach((gift) => {
-      // Count brands
-      if (gift.brand) {
-        brands[gift.brand] = (brands[gift.brand] || 0) + 1;
-      }
+  // Use filteredGifts to group and count data
+  filteredGifts.forEach((gift) => {
+    // Count brands
+    if (gift.brand) {
+      brands[gift.brand] = (brands[gift.brand] || 0) + 1;
+    }
 
-      // Parse enrichedData and count categories
-      const category = gift.enrichedData?.category;
-      if (category) {
-        categories[category] = (categories[category] || 0) + 1;
-      }
+    // Parse enrichedData and count categories
+    const category = gift.enrichedData?.category;
+    if (category) {
+      categories[category] = (categories[category] || 0) + 1;
+    }
 
-      // Parse metadata and count genders
-      const gender = gift.metadata?.gender;
-      if (gender) {
-        genders[gender] = (genders[gender] || 0) + 1;
-      }
+    // Parse metadata and count genders
+    const gender = gift.metadata?.gender;
+    if (gender) {
+      genders[gender] = (genders[gender] || 0) + 1;
+    }
 
-      // Count price buckets
-      const price = parseFloat(gift.price || '0');
-      if (price <= 50) {
-        priceBuckets['$1 - $50']++;
-      } else if (price <= 100) {
-        priceBuckets['$51 - $100']++;
-      } else if (price <= 200) {
-        priceBuckets['$101 - $200']++;
-      } else {
-        priceBuckets['$200+']++;
-      }
+    // Count price buckets
+    const price = parseFloat(gift.price || '0');
+    if (price <= 50) {
+      priceBuckets['$1 - $50']++;
+    } else if (price <= 100) {
+      priceBuckets['$51 - $100']++;
+    } else if (price <= 200) {
+      priceBuckets['$101 - $200']++;
+    } else {
+      priceBuckets['$200+']++;
+    }
 
-      // Parse enrichedData and count vibes
-      const vibeString = gift.enrichedData?.vibe;
-      if (vibeString) {
-        const vibeArray = vibeString.split(',');
-        vibeArray.forEach((vibe) => {
-          const trimmedVibe = vibe.trim();
-          vibes[trimmedVibe] = (vibes[trimmedVibe] || 0) + 1;
-        });
-      }
+    // Parse enrichedData and count vibes
+    const vibeString = gift.enrichedData?.vibe;
+    if (vibeString) {
+      const vibeArray = vibeString.split(',');
+      vibeArray.forEach((vibe) => {
+        const trimmedVibe = vibe.trim();
+        vibes[trimmedVibe] = (vibes[trimmedVibe] || 0) + 1;
+      });
+    }
+  });
 
-      // Log loadedGiftList, categories, and genders for debugging
-      console.log('loadedGiftList:', loadedGiftList);
-      console.log('categories:', categories);
-      console.log('genders:', genders);
-      console.log('vibes:', vibes);
+  // Update state with the counts
+  setBrandsCount(brands);
+  setCategoriesCount(categories);
+  setGendersCount(genders);
+  setPriceBucketsCount(priceBuckets);
+  setVibesCount(vibes);
+}, [filteredGifts]); // Watch for changes in filteredGifts
 
-    });
-
-    setBrandsCount(brands);
-    setCategoriesCount(categories);
-    setGendersCount(genders);
-    setPriceBucketsCount(priceBuckets);
-    setVibesCount(vibes);
-  }, [loadedGiftList]);
 
   // Calculate total gifts and issues
   const totalGifts = loadedGiftList.length;
