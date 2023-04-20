@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import GiftList from '../components/GiftList';
 import { Gift } from '../types/gift';
-import { Box, Button, Flex, Heading } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Center } from '@chakra-ui/react';
 import { useLoadGifts } from '../hooks/useLoadGifts';
 
 const GiftListPage: React.FC = () => { // Remove allGifts prop
@@ -81,10 +81,17 @@ const GiftListPage: React.FC = () => { // Remove allGifts prop
   return (
     <Box>
       {/* Display error message if there is an error */}
-      {error && <p>Error: {error}</p>}
-
-      <Heading as="h1" size="2xl" mb={6}></Heading>
-      <GiftList giftList={giftsToDisplay} />
+      {error && <Box>Error: {error}</Box>}
+      
+      <Box>
+        <Heading as="h1" size="2xl" mb={6}></Heading>
+        {/* Wrap GiftList with Center to center it */}
+        <Center>
+          <GiftList giftList={giftsToDisplay} />
+        </Center>
+      </Box>
+      
+      {/* Pagination buttons */}
       <Flex mt={6} justifyContent="center">
         {currentPage > 1 && (
           <Button onClick={() => handlePageChange(currentPage - 1)} mr={2}>

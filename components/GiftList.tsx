@@ -29,7 +29,7 @@ const GiftList: React.FC<GiftListProps> = ({ giftList }) => {
       <Heading as="h1" mb={4} textAlign="center">
         Gift List
       </Heading>
-      <Grid templateColumns="repeat(4, 2fr)" gap={6}>
+      <Grid templateColumns={{ base: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)', lg: 'repeat(4, 1fr)' }} gap={6}>
         {giftList.map((gift) => (
           <LinkBox
             as="article"
