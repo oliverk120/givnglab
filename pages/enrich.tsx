@@ -187,13 +187,14 @@ const handleSaveCsv = () => {
           ))}
         </Select>
       </FormControl>
-      <Button onClick={handlePreprocess}>Load Gifts</Button>
-      {error && <Alert status="error">{error}</Alert>}
-      <Button onClick={handleEnrichCategories}>Enrich Categories</Button> {/* Button for categories */}
-      <Button onClick={handleEnrichVibes}>Enrich Vibes</Button> {/* Button for vibes */}
-      <Button onClick={handleSaveCsv} colorScheme="blue">
-        Save Enriched CSV
-      </Button>
+    {/* Use an anonymous function to pass selectedCsvFile to handlePreprocess */}
+    <Button onClick={() => handlePreprocess(selectedCsvFile)}>Load Gifts</Button>
+    {error && <Alert status="error">{error}</Alert>}
+    <Button onClick={handleEnrichCategories}>Enrich Categories</Button> {/* Button for categories */}
+    <Button onClick={handleEnrichVibes}>Enrich Vibes</Button> {/* Button for vibes */}
+    <Button onClick={handleSaveCsv} colorScheme="blue">
+      Save Enriched CSV
+    </Button>
             {/* Display example prompt */}
             {examplePrompt && (
         <Box maxW="container.xl" mx="auto" p={4}>
@@ -221,7 +222,6 @@ const handleSaveCsv = () => {
                 <Td>{gift.brand}</Td>
                 <Td>{gift.price}</Td>
                 <Td>{gift.enrichedData?.category}</Td>
-                <Td>{gift.enrichedData?.gender}</Td>
                 <Td>{gift.enrichedData?.vibe}</Td>
               </Tr>
             ))}

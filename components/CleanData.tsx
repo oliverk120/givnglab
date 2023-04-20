@@ -95,10 +95,9 @@ const cleanEnrichedData = (gift: Gift) => {
   if (enrichedData) {
     // Clean the enrichedData properties by removing unwanted characters
     const cleanedCategory = enrichedData.category?.replace(/[ "']/g, '') || '';
-    const cleanedGender = enrichedData.gender?.replace(/[ "']/g, '') || '';
     const cleanedVibe = enrichedData.vibe?.replace(/[ "']/g, '') || '';
     // Update the enrichedData object
-    const cleanedEnrichedData = { category: cleanedCategory, gender: cleanedGender, vibe: cleanedVibe };
+    const cleanedEnrichedData = { category: cleanedCategory, vibe: cleanedVibe };
     return { ...gift, enrichedData: cleanedEnrichedData };
   }
   return gift;
